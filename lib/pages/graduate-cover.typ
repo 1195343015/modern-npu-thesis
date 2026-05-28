@@ -18,8 +18,6 @@
     "author-en",
     "supervisor",
     "supervisor-en",
-    "chairman",
-    "reviewer",
   )
 
   let anonymous-text(key, body) = {
@@ -84,7 +82,7 @@
         ..info-row(char-space(major-label), info.major),
         ..info-row([#char-space("指导教师")], anonymous-text(
           "supervisor",
-          info.supervisor.intersperse(" ").sum(),
+          info.supervisor.intersperse("  ").sum(),
         )),
         ..info-row([#char-space("培养单位")], info.department),
         ..info-row([#char-space("申请日期")], datetime-display(info.submit-date)),
@@ -207,11 +205,11 @@
       columns: (3.71cm, 2.83cm, 8.73cm),
       inset: (x: 4pt, y: 8pt),
       [*姓名*], [*职称*], [*工作单位*],
-      ..info.reviewers.map(r => ([#anonymous-text("reviewer", r.name)], [#r.title], [#r.unit])).flatten(),
+      ..info.reviewers.map(r => ([#r.name], [#r.title], [#r.unit])).flatten(),
     )
     v(79pt)
 
-    let defence-date-display = datetime-display(info.defence-committee.date)
+    let defence-date-display = mask-value(datetime-display(info.defence-committee.date), anonymous: anonymous)
     let defence-committee = info.defence-committee
     let defence-members = {
       let entries = ()
@@ -231,7 +229,7 @@
       inset: (x: 4pt, y: 8pt),
       [*答辩日期*], table.cell(colspan: 3, [#defence-date-display]),
       [*答辩委员会*], [*姓名*], [*职称*], [*工作单位*],
-      ..defence-members.map(m => ([*#m.role*], [#anonymous-text("reviewer", m.name)], [#m.title], [#m.unit])).flatten(),
+      ..defence-members.map(m => ([*#m.role*], [#mask-value(m.name, anonymous: anonymous)], [#mask-value(m.title, anonymous: anonymous)], [#mask-value(m.unit, anonymous: anonymous)])).flatten(),
     )
   }
 

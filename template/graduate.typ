@@ -19,7 +19,7 @@
     author-en: "Xiaotian Hang",
     department: "计算机学院",
     major: "计算机科学与技术",
-    supervisor: ("张三", "副教授"),
+    supervisor: ("张三", "教授"),
     supervisor-en: "San Zhang",
     submit-date: (year: 2026, month: 3),
     // 默认为全盲审模式，如果需要指定评阅人名单，可以在 info 中添加 reviewers 字段，如下所示：
