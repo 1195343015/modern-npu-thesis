@@ -7,6 +7,7 @@
   graduate: false,
   degree: "master",
   english-writing: false,
+  print-mode: false,
   it,
 ) = {
   let leading = if graduate { 11.8pt } else { 11pt }
@@ -59,7 +60,7 @@
 
     // 一级标题统一换页并居中
     if it.level == 1 {
-      pagebreak(weak: true, to: if graduate { "odd" })
+      pagebreak(weak: true, to: if graduate or print-mode { "odd" })
       v(leading + above-extra)
       align(center, block(below: leading + below-extra, it))
     } else if it.level >= 4 {

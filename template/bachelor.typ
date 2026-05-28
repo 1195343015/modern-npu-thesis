@@ -5,6 +5,7 @@
 #show: nwpu-thesis.with(
   ref-par-indent: "none", // 参考文献段落格式："none" | "first-line" | "hanging"
   anonymous: false, // 是否开启盲审模式
+  print-mode: true, // 是否开启印刷模式
   info: (
     title: ("基于Typst的西工大论文模板", "长标题支持"),
     author: "航小天",

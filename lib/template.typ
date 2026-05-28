@@ -29,6 +29,7 @@
   anonymous: false,
   english-writing: false,
   colored-cover: false,
+  print-mode: false,
   info: (:),
   abstract: (:),
   abstract-en: (:),
@@ -61,6 +62,11 @@
     )
   }
 
+  // 本科生封面后的空页（封底），在 mainmatter 之前渲染，无页眉页脚
+  if not graduate and print-mode {
+    pagebreak()
+  }
+
   show: init-gb7714.with(
     read(bibliography),
     style: "numeric",
@@ -77,6 +83,7 @@
     graduate: graduate,
     degree: degree,
     english-writing: english-writing,
+    print-mode: print-mode,
   )
 
   // 4. 前置部分（摘要、目录）
@@ -112,7 +119,7 @@
       )
     }
 
-    #if graduate {
+    #if graduate or print-mode {
       pagebreak(weak: true, to: "odd")
     }
   ]
