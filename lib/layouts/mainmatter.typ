@@ -11,7 +11,7 @@
   it,
 ) = {
   let leading = if graduate { 11.8pt } else { 11pt }
-  let heading-above = if graduate { (13pt, 7pt, 5pt) } else { (20pt, 0pt, 0pt) }
+  let heading-above = if graduate { (13pt, 7pt, 5pt) } else { (33pt, 0pt, 0pt) }
   let heading-below = if graduate { (14pt, 0pt, 0pt) } else { (24pt, 2pt, 0pt) }
   let heading-numbering = if english-writing {
     numbly("Chapter {1}  ", "{1}.{2}", "{1}.{2}.{3}", "({4})", "{5}")
