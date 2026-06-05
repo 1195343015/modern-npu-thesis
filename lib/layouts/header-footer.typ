@@ -48,6 +48,7 @@
     #set text(zh(3), weight: "bold")
     #box(width: 2.99cm, height: 0.61cm, move(dy: 0.1em, image("../assets/nwpu-name.png")))#h(0.2em)本科毕业设计（论文）
     #line(length: 100%, stroke: 0.8pt)
+    #v(5pt)
   ]
 }
 
