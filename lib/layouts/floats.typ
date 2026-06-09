@@ -63,6 +63,7 @@
   set math.equation(supplement: if english-writing { [Equation] } else { [式] })
   show math.equation.where(block: true): i-figured.show-equation.with(
     numbering: (..nums) => context {
+      set text(font: 字体.宋体混排)
       if graduate {
         numbering("(" + numbering-format.get() + ")", ..nums)
       } else {
