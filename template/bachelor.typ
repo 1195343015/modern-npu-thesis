@@ -10,8 +10,8 @@
     title: ("基于Typst的西工大论文模板", "长标题支持"),
     author: "航小天",
     major: "计算机科学与技术",
-    supervisor: ("张三", "教授"),
-    submit-date: (year: 2026, month: 3),
+    supervisor: "张三",
+    submit-date: (2026, 3),
   ),
   abstract: (
     content: [

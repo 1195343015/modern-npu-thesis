@@ -66,21 +66,21 @@
   table.cell(stroke: (bottom: stroke-width), align(bottom)[#value]),
 )
 
-// 显示中文日期（无前导零），不传 day 则只输出年月
+// 显示中文日期（无前导零），date 为 (year, month, day?) 数组
 #let datetime-display(date) = {
-  str(date.year) + " 年 " + str(date.month) + " 月" + if date.at("day", default: none) != none {
-    " " + str(date.day) + " 日"
+  str(date.at(0)) + " 年 " + str(date.at(1)) + " 月" + if date.at(2, default: none) != none {
+    " " + str(date.at(2)) + " 日"
   }
 }
 
-// 显示英文年月（如 March/2026）
+// 显示英文年月（如 March/2026），date 为 (year, month) 数组
 #let datetime-display-en(date) = {
   let months = ("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December")
-  months.at(date.month - 1) + "/" + str(date.year)
+  months.at(date.at(1) - 1) + "/" + str(date.at(0))
 }
 
 // 全盲评阅条目（三个字段固定）
-#let blind-review = (name: "全盲评阅", title: "无", unit: "无")
+#let blind-review = ("全盲评阅", "无", "无")
 
 // 学科专业中英文名称对照（仅含西北工业大学开设专业）
 // 来源：NWPU 2026 博士 / 2025 硕士招生简章

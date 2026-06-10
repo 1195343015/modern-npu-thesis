@@ -205,7 +205,7 @@
       columns: (3.71cm, 2.83cm, 8.73cm),
       inset: (x: 4pt, y: 8pt),
       [*姓名*], [*职称*], [*工作单位*],
-      ..info.reviewers.map(r => ([#r.name], [#r.title], [#r.unit])).flatten(),
+      ..info.reviewers.map(r => ([#r.at(0)], [#r.at(1)], [#r.at(2)])).flatten(),
     )
     v(79pt)
 
@@ -213,11 +213,11 @@
     let defence-committee = info.defence-committee
     let defence-members = {
       let entries = ()
-      entries.push((role: "主席", ..defence-committee.chairman))
+      entries.push(("主席",) + defence-committee.chairman)
       for m in defence-committee.members {
-        entries.push((role: "委员", ..m))
+        entries.push(("委员",) + m)
       }
-      entries.push((role: "秘书", ..defence-committee.secretary))
+      entries.push(("秘书",) + defence-committee.secretary)
       entries
     }
 
@@ -229,7 +229,7 @@
       inset: (x: 4pt, y: 8pt),
       [*答辩日期*], table.cell(colspan: 3, [#defence-date-display]),
       [*答辩委员会*], [*姓名*], [*职称*], [*工作单位*],
-      ..defence-members.map(m => ([*#m.role*], [#mask-value(m.name, anonymous: anonymous)], [#mask-value(m.title, anonymous: anonymous)], [#mask-value(m.unit, anonymous: anonymous)])).flatten(),
+      ..defence-members.map(m => ([*#m.at(0)*], [#mask-value(m.at(1), anonymous: anonymous)], [#mask-value(m.at(2), anonymous: anonymous)], [#mask-value(m.at(3), anonymous: anonymous)])).flatten(),
     )
   }
 

@@ -38,7 +38,7 @@
       rows: 2.2cm,
       ..info-row([专业名称], info.major),
       ..info-row([学生姓名], mask-value(info.author, anonymous: anonymous)),
-      ..info-row([指导教师], mask-value(info.supervisor.at(0), anonymous: anonymous)),
+      ..info-row([指导教师], mask-value(info.supervisor, anonymous: anonymous)),
       ..info-row([毕业时间], info.submit-date),
     )
   ]

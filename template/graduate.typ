@@ -21,20 +21,20 @@
     major: "计算机科学与技术",
     supervisor: ("张三", "教授"),
     supervisor-en: "San Zhang",
-    submit-date: (year: 2026, month: 3),
+    submit-date: (2026, 3),
     // 默认为全盲审模式，如果需要指定评阅人名单，可以在 info 中添加 reviewers 字段，如下所示：
     // reviewers: (
-    //   (name: "xxx", title: "教授", unit: "西北工业大学"),
-    //   (name: "yyy", title: "教授", unit: "西北工业大学"),
+    //   ("xxx", "教授", "西北工业大学"),
+    //   ("yyy", "教授", "西北工业大学"),
     // ),
     defence-committee: (
-      date: (year: 2026, month: 3, day: 9),
-      chairman: (name: "赵某某", title: "教授", unit: "西北工业大学"),
+      date: (2026, 3, 9),
+      chairman: ("赵某某", "教授", "西北工业大学"),
       members: (
-        (name: "周某某", title: "教授", unit: "西北工业大学"),
-        (name: "吴某某", title: "副教授", unit: "西北工业大学"),
+        ("周某某", "教授", "西北工业大学"),
+        ("吴某某", "副教授", "西北工业大学"),
       ),
-      secretary: (name: "郑某某", title: "讲师", unit: "西北工业大学"),
+      secretary: ("郑某某", "讲师", "西北工业大学"),
     ),
   ),
   abstract: (
