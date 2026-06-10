@@ -57,7 +57,7 @@
 }
 
 #let mask-value(body, anonymous: false) = {
-  if anonymous { "        " } else { body }
+  if anonymous { "***" } else { body }
 }
 
 // 信息行：标签 + 下划线值（用于封面表格）
