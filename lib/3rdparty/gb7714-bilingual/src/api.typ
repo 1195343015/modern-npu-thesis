@@ -1,6 +1,6 @@
 // GB/T 7714 双语参考文献系统 - 公共 API
 
-#import "@preview/citegeist:0.2.2": load-bibliography
+#import "@preview/citegeist:0.3.1": load-bibliography
 
 #import "@preview/auto-pinyin:0.1.0": to-pinyin
 
