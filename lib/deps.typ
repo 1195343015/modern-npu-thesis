@@ -26,3 +26,6 @@
 
 // pointless-size（中文字号）
 #import "@preview/pointless-size:0.1.2": zh
+
+// cjk-spacer（中日韩文本排版间距优化）
+#import "@preview/cjk-spacer:0.2.1": cjk-spacer
