@@ -10,7 +10,7 @@
 #import "@preview/algorithmic:1.0.7": algorithm-figure, style-algorithm, If, While, For, Assign, Return, Procedure, Comment, Line, IfElseChain, LineBreak, ElseIf, Else, Function, Break, Terminate
 
 // hydra（页眉标题追踪）
-#import "@preview/hydra:0.6.2": hydra
+#import "@preview/hydra:0.6.3": hydra
 
 // i-figured（公式/图表编号）
 #import "@preview/i-figured:0.2.4"
