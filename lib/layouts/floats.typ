@@ -93,7 +93,7 @@
     middle-rule: 1pt,
     caption-text: if graduate { (font: 字体.宋体混排) } else { (font: 字体.黑体) },
     caption-below: if graduate { auto } else { 10pt },
-    table-below: if graduate { 11pt } else { line-height },
+    table-below: if graduate { 11.8pt } else { line-height },
     caption-above: if graduate { auto } else { line-height },
     breakable: false,
     continued-caption: true,
