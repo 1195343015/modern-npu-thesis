@@ -22,7 +22,7 @@
   }
 
   // 图、表、公式、算法样式
-  show: setup-floats.with(graduate: graduate, english-writing: english-writing)
+  show: setup-floats.with(graduate: graduate, english-writing: english-writing, leading: leading)
 
   // 页眉页脚
   show: page-header-footer.with(graduate: graduate, degree: degree)

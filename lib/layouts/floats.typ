@@ -42,6 +42,8 @@
 #let setup-floats(
   graduate: false,
   english-writing: false,
+  // 研究生正文行距，由 mainmatter 传入，用于与段落 leading 保持一致的间距（仅 graduate 分支使用）
+  leading: 11.8pt,
   body,
 ) = {
   english-writing-state.update(english-writing)
@@ -93,7 +95,7 @@
     middle-rule: 1pt,
     caption-text: if graduate { (font: 字体.宋体混排) } else { (font: 字体.黑体) },
     caption-below: if graduate { auto } else { 10pt },
-    table-below: if graduate { 11.8pt } else { line-height },
+    table-below: if graduate { leading } else { line-height },
     caption-above: if graduate { auto } else { line-height },
     breakable: false,
     continued-caption: true,
