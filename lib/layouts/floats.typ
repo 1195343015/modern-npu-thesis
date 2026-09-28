@@ -60,6 +60,14 @@
       grid.hline(stroke: 1.5pt + black),
     ),
   )
+  // 本科生格式要求：算法三线表前后各空一行，与图、表的处理一致
+  // 注意：必须定义在 style-algorithm 之后（后定义的 show 规则先应用），block 才会包在三线表外层
+  show figure.where(kind: "algorithm"): it => block(
+    above: if graduate { auto } else { line-height },
+    below: if graduate { auto } else { line-height },
+    breakable: true,
+    it,
+  )
 
   // 公式编号
   set math.equation(supplement: if english-writing { [Equation] } else { [式] })
