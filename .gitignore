@@ -17,3 +17,5 @@ dist/
 *.pdf
 !template/figures/*.pdf
 template/duibi/
+
+.claude/
