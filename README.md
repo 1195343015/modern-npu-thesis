@@ -32,10 +32,10 @@
 
 本模板依赖以下 Typst 包，具体用法有疑惑可直接查阅相关文档：
 
-- [`gb7714-bilingual`](https://typst.app/universe/package/gb7714-bilingual) `基于 Github main 分支的修改版本` — GB/T 7714 双语参考文献格式
+- [`omni-gb7714`](https://github.com/typst-omni-gb7714/omni-gb7714) `vendored fork（含本地修复，见 lib/3rdparty/omni-gb7714/VENDORED.md）` — GB/T 7714 参考文献格式（2005/2015/2025）
 - [`algorithmic`](https://typst.app/universe/package/algorithmic) `1.0.7` — 伪代码/算法排版
 - [`cap-able`](https://typst.app/universe/package/cap-able) `0.1.1` — 图/表
-- [`pointless-size`](https://typst.app/universe/package/pointless-size) `0.1.2` — 中文字号
+- [`pointless-size`](https://typst.app/universe/package/pointless-size) `0.1.3` — 中文字号
 
 ### QQ 交流群
 

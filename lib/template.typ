@@ -1,7 +1,8 @@
 #import "deps.typ": (
   Assign, Break, Comment, Else, ElseIf, For, Function, If, IfElseChain, Line, LineBreak, Procedure, Return, Terminate,
-  While, capfig, capfig-style, capsubfig, captab, captab-style, init-gb7714, multicite, zh,
+  While, capfig, capfig-style, capsubfig, captab, captab-style, zh,
 )
+#import "layouts/bib.typ": setup-bib, references-page, multicite
 #import "layouts/doc.typ": doc
 #import "layouts/floats.typ": algorithm, equation-note
 #import "layouts/mainmatter.typ": frontmatter, mainmatter
@@ -11,7 +12,6 @@
 #import "pages/abstract.typ": abstract-page
 #import "pages/outline.typ": outline-page
 #import "pages/backmatter-page.typ": backmatter-page
-#import "pages/references.typ": bilingual-bibliography
 #import "utils.typ": distribute, page-title
 
 #let default-bibliography(graduate) = {
@@ -67,16 +67,7 @@
     pagebreak()
   }
 
-  show: init-gb7714.with(
-    read(bibliography),
-    style: "numeric",
-    version: "2025",
-    zh-period: if not graduate { "．" },
-    zh-colon: if not graduate { "： " },
-    zh-comma: if not graduate { "，" },
-    en-family-titlecase: not graduate,
-    range-sep: if not graduate { "~" } else { "-" },
-  )
+  show: setup-bib.with(graduate: graduate)
 
   // 3. mainmatter 包裹所有后续内容（前置 + 正文 + 后置）
   show: mainmatter.with(
@@ -131,10 +122,11 @@
   body
 
   // 6. 后置部分
-  bilingual-bibliography(
+  // ref-par-indent 保留参数但已无效：条目缩进由 omni 的 entry-first-line-indent 统一控制
+  references-page(
     graduate: graduate,
     english-writing: english-writing,
-    par-indent: ref-par-indent,
+    bibliography: read(bibliography),
   )
 
   if graduate and appendix != none {
