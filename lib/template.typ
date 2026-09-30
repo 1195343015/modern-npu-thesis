@@ -2,7 +2,7 @@
   Assign, Break, Comment, Else, ElseIf, For, Function, If, IfElseChain, Line, LineBreak, Procedure, Return, Terminate,
   While, capfig, capfig-style, capsubfig, captab, captab-style, zh,
 )
-#import "layouts/bib.typ": setup-bib, references-page, multicite
+#import "layouts/bib.typ": setup-bib, references-page, multicite, achievements-list
 #import "layouts/doc.typ": doc
 #import "layouts/floats.typ": algorithm, equation-note
 #import "layouts/mainmatter.typ": frontmatter, mainmatter
@@ -22,6 +22,11 @@
   }
 }
 
+// 研究生成果页独立 bib；none 关闭，字符串覆盖路径
+#let default-achievements-bibliography() = {
+  "../template/bib/graduate-achievements.bib"
+}
+
 #let nwpu-thesis(
   graduate: false,
   degree: "master",
@@ -35,6 +40,7 @@
   abstract-en: (:),
   acknowledgement: none,
   academic-achievements: none,
+  achievements-bibliography: auto,
   appendix: none,
   scan-declaration: none,
   design-summary: none,
@@ -145,10 +151,20 @@
   }
 
   if graduate and academic-achievements != none {
+    let ach-bib = if achievements-bibliography == auto {
+      default-achievements-bibliography()
+    } else {
+      achievements-bibliography
+    }
     backmatter-page(
       "academic-achievements",
       english-writing: english-writing,
-    )[#academic-achievements]
+    )[
+      #academic-achievements
+      #if ach-bib != none {
+        achievements-list(read(ach-bib))
+      }
+    ]
   }
 
   if not graduate and design-summary != none {
