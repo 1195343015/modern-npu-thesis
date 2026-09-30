@@ -18,6 +18,10 @@ on:
       - "template.typ"
       - "typst.toml"
   workflow_dispatch:
+  # 定期重建：nightly.link 指向本 workflow 最新成功运行的 artifact，
+  # artifact 过 retention 即失效，周期跑保证预览链接长期有效
+  schedule:
+    - cron: "23 4 * * 2"
 
 permissions:
   contents: read
@@ -47,7 +51,7 @@ jobs:
       - name: Setup Typst
         uses: typst-community/setup-typst@v5
         with:
-          typst-version: 0.14.0
+          typst-version: 0.15.1
 
       - name: Create output directory
         run: New-Item -ItemType Directory -Force -Path dist | Out-Null
@@ -62,6 +66,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: thesis-pdf
+          retention-days: 90
           path: |
             dist/graduate.pdf
             dist/bachelor.pdf
