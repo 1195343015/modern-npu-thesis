@@ -1,6 +1,9 @@
 #import "../utils.typ": 字体
 #import "../deps.typ": zh
 
+// 前置部分页码重置的一次性标记（摘要页调用两次：中/英）
+#let _fm-folio-reset = state("nwpu-fm-folio-reset", false)
+
 // 摘要页
 // abstract: 摘要字典，包含 content、keywords、funding
 // title: 页面和页眉显示的标题
@@ -23,6 +26,14 @@
   {
     show heading: set text(font: 字体.黑体混排)
     heading(level: 1, outlined: outlined, display-title)
+  }
+
+  // 页码重置放在首个可见标题之后：确保落在前置首页，不依赖参考文献栈的副作用
+  context {
+    if not _fm-folio-reset.get() {
+      _fm-folio-reset.update(true)
+      counter(page).update(1)
+    }
   }
 
   content
