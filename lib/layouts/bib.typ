@@ -53,6 +53,11 @@
   body
 }
 
+// 成果列表：独立 bib 全量渲染，label 隔离编号（独立从 [1] 起）
+#let achievements-list(source) = {
+  omni-bibliography(source, title: none, full: true, label: "achievements")
+}
+
 // 参考文献页
 #let references-page(
   graduate: false,
