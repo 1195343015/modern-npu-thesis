@@ -58,10 +58,6 @@
   degree: "master",
   body,
 ) = {
-  // 封面/前置边界上零高度元素（各参考文献栈包装层头部）落点不确定，
-  // 弱奇数页断页把页眉页脚设置的生效位置钉到前置首页：
-  // 已在前置首页起点时为 no-op，滞留在封面末页时补一次断页
-  pagebreak(weak: true, to: "odd")
   set page(
     footer: page-footer("1"),
     header-ascent: if graduate { 18% } else { 12% },
