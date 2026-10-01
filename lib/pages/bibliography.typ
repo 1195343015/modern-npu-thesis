@@ -203,88 +203,61 @@
   body
 }
 
+// 逐类型 + par-indent 三分支渲染器（供主参考文献表与 bib-list 共用，单一来源）。
+// par-indent: "first-line" | "none" | 其它(悬挂/box)。
+#let gb7714-entries-renderer(graduate: false, par-indent: "none") = (entries) => {
+  let render-one = (entry, punct) => {
+    if entry.entry-type == "patent" {
+      render-custom-patent(entry, punct)
+    } else if entry.entry-type == "inproceedings" or entry.entry-type == "conference" {
+      render-custom-conference(entry, graduate: graduate, punct)
+    } else if is-other-entry(entry) {
+      render-custom-other(entry, punct)
+    } else if entry.entry-type == "standard" {
+      render-custom-standard(entry, punct)
+    } else {
+      entry.labeled-rendered
+    }
+  }
+  for entry in entries {
+    let punct = if graduate or entry.lang == "en" {
+      (period: ".", comma: ", ", colon: ": ")
+    } else {
+      (period: "．", comma: "，", colon: "：")
+    }
+    if par-indent == "first-line" {
+      set par(first-line-indent: (amount: 2em, all: true))
+      [[#entry.order]#h(0.5em)#render-one(entry, punct)]
+    } else if par-indent == "none" {
+      set par(hanging-indent: 0em, first-line-indent: (amount: 0em, all: true))
+      [[#entry.order]#h(0.5em)#render-one(entry, punct)]
+    } else {
+      set par(hanging-indent: 2.5em, first-line-indent: (amount: 0em, all: true))
+      [#box(width: 2em, align(right)[\[#entry.order\]])#h(0.5em)#render-one(entry, punct)]
+    }
+    parbreak()
+  }
+}
+
+// 成果页：从独立 bib 渲染一张“独立编号、全量”的表；与参考页共用渲染器与 backmatter-page 入口。
+#let achievements-list(source, graduate: false, par-indent: "none") = {
+  gb7714-bibliography(
+    source,
+    title: none,
+    label: "achievements",
+    full-control: gb7714-entries-renderer(graduate: graduate, par-indent: par-indent),
+  )
+}
+
 #let bilingual-bibliography(
   graduate: false,
-  english-writing: false,
-  title: auto,
   full: false,
   par-indent: "none",
 ) = {
-  if title == auto {
-    title = page-title("references", english-writing: english-writing)
-  }
-
-  heading(level: 1, numbering: none, outlined: true)[#title]
-
   gb7714-bibliography(
     title: none,
     full: full,
-    full-control: entries => {
-      if par-indent == "first-line" {
-        set par(first-line-indent: (amount: 2em, all: true))
-        for entry in entries {
-          let punct = if graduate or entry.lang == "en" {
-            (period: ".", comma: ", ", colon: ": ")
-          } else {
-            (period: "．", comma: "，", colon: "：")
-          }
-          if entry.entry-type == "patent" {
-            [[#entry.order]#h(0.5em)#render-custom-patent(entry, punct)]
-          } else if entry.entry-type == "inproceedings" or entry.entry-type == "conference" {
-            [[#entry.order]#h(0.5em)#render-custom-conference(entry, graduate: graduate, punct)]
-          } else if is-other-entry(entry) {
-            [[#entry.order]#h(0.5em)#render-custom-other(entry, punct)]
-          } else if entry.entry-type == "standard" {
-            [[#entry.order]#h(0.5em)#render-custom-standard(entry, punct)]
-          } else {
-            [[#entry.order]#h(0.5em)#entry.labeled-rendered]
-          }
-          parbreak()
-        }
-      } else if par-indent == "none" {
-        set par(hanging-indent: 0em, first-line-indent: (amount: 0em, all: true))
-        for entry in entries {
-          let punct = if graduate or entry.lang == "en" {
-            (period: ".", comma: ", ", colon: ": ")
-          } else {
-            (period: "．", comma: "，", colon: "：")
-          }
-          if entry.entry-type == "patent" {
-            [[#entry.order]#h(0.5em)#render-custom-patent(entry, punct)]
-          } else if entry.entry-type == "inproceedings" or entry.entry-type == "conference" {
-            [[#entry.order]#h(0.5em)#render-custom-conference(entry, graduate: graduate, punct)]
-          } else if is-other-entry(entry) {
-            [[#entry.order]#h(0.5em)#render-custom-other(entry, punct)]
-          } else if entry.entry-type == "standard" {
-            [[#entry.order]#h(0.5em)#render-custom-standard(entry, punct)]
-          } else {
-            [[#entry.order]#h(0.5em)#entry.labeled-rendered]
-          }
-          parbreak()
-        }
-      } else {
-        set par(hanging-indent: 2.5em, first-line-indent: (amount: 0em, all: true))
-        for entry in entries {
-          let punct = if graduate or entry.lang == "en" {
-            (period: ".", comma: ", ", colon: ": ")
-          } else {
-            (period: "．", comma: "，", colon: "：")
-          }
-          if entry.entry-type == "patent" {
-            [#box(width: 2em, align(right)[\[#entry.order\]])#h(0.5em)#render-custom-patent(entry, punct)]
-          } else if entry.entry-type == "inproceedings" or entry.entry-type == "conference" {
-            [#box(width: 2em, align(right)[\[#entry.order\]])#h(0.5em)#render-custom-conference(entry, graduate: graduate, punct)]
-          } else if is-other-entry(entry) {
-            [#box(width: 2em, align(right)[\[#entry.order\]])#h(0.5em)#render-custom-other(entry, punct)]
-          } else if entry.entry-type == "standard" {
-            [#box(width: 2em, align(right)[\[#entry.order\]])#h(0.5em)#render-custom-standard(entry, punct)]
-          } else {
-            [#box(width: 2em, align(right)[\[#entry.order\]])#h(0.5em)#entry.labeled-rendered]
-          }
-          parbreak()
-        }
-      }
-    },
+    full-control: gb7714-entries-renderer(graduate: graduate, par-indent: par-indent),
   )
 }
   )

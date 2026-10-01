@@ -11,7 +11,7 @@
 #import "pages/abstract.typ": abstract-page
 #import "pages/outline.typ": outline-page
 #import "pages/backmatter-page.typ": backmatter-page
-#import "pages/references.typ": bilingual-bibliography
+#import "pages/bibliography.typ": bilingual-bibliography, achievements-list
 #import "utils.typ": distribute, page-title
 
 #let default-bibliography(graduate) = {
@@ -21,6 +21,8 @@
     "../template/bib/graduate.bib"
   }
 }
+
+#let default-achievements-bibliography() = "../template/bib/graduate-achievements.bib"
 
 #let nwpu-thesis(
   graduate: false,
@@ -34,7 +36,7 @@
   abstract: (:),
   abstract-en: (:),
   acknowledgement: none,
-  academic-achievements: none,
+  achievements-bibliography: auto,
   appendix: none,
   scan-declaration: none,
   design-summary: none,
@@ -131,11 +133,13 @@
   body
 
   // 6. 后置部分
-  bilingual-bibliography(
+  backmatter-page(
+    "references",
     graduate: graduate,
     english-writing: english-writing,
-    par-indent: ref-par-indent,
-  )
+  )[
+    #bilingual-bibliography(graduate: graduate, par-indent: ref-par-indent)
+  ]
 
   if graduate and appendix != none {
     appendix-page(
@@ -152,11 +156,13 @@
     )[#acknowledgement]
   }
 
-  if graduate and academic-achievements != none {
+  if graduate and achievements-bibliography != none {
     backmatter-page(
       "academic-achievements",
       english-writing: english-writing,
-    )[#academic-achievements]
+    )[
+      #achievements-list(read(default-achievements-bibliography()), graduate: graduate, par-indent: ref-par-indent)
+    ]
   }
 
   if not graduate and design-summary != none {
