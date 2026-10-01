@@ -22,7 +22,7 @@
 ### 使用方法
 
 1. Fork 本仓库到自己的账号下，然后克隆 Fork 后的仓库。（方便后续同步模板更新。）
-2. 使用 VS Code 打开项目，并安装 [Tinymist Typst](https://marketplace.visualstudio.com/items?itemName=myriad-dreamin.tinymist) 插件。
+2. 使用 VS Code 或类 VS Code 编辑器（如 Cursor、Qoder 等）打开项目，并安装 Tinymist Typst 插件。
 3. 打开项目后：
    分别修改 [template/graduate.typ](template/graduate.typ) 和 [template/bachelor.typ](template/bachelor.typ) 可编辑研究生或本科生论文。
 
