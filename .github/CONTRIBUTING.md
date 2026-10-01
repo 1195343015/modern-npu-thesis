@@ -26,7 +26,7 @@
 
 - VS Code 或类 VS Code 编辑器（如 Cursor、Qoder 等）
 - Tinymist Typst 插件
-- Typst `0.14.0`
+- Typst `0.15.1`
 
 仓库自带 [.vscode/settings.json](.vscode/settings.json)，会自动追加 `--font-path fonts`。
 
