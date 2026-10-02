@@ -2,7 +2,7 @@
   Assign, Break, Comment, Else, ElseIf, For, Function, If, IfElseChain, Line, LineBreak, Procedure, Return, Terminate,
   While, capfig, capfig-style, capsubfig, captab, captab-style, zh,
 )
-#import "layouts/bib.typ": setup-bib, references-page, achievements-list
+#import "layouts/bib.typ": setup-bib, bibliography-list, achievements-list
 #import "layouts/doc.typ": doc
 #import "layouts/floats.typ": algorithm, equation-note
 #import "layouts/mainmatter.typ": frontmatter, mainmatter
@@ -128,11 +128,13 @@
   // 6. 后置部分
   // ref-par-indent 保留参数但已无效：条目缩进由 omni 的 entry-first-line-indent 统一控制
   if bib-path != none {
-    references-page(
+    backmatter-page(
+      "references",
       graduate: graduate,
       english-writing: english-writing,
-      bibliography: read(bib-path),
-    )
+    )[
+      #bibliography-list(read(bib-path))
+    ]
   }
 
   if graduate and appendix != none {

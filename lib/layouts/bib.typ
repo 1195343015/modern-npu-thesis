@@ -1,6 +1,5 @@
 // 参考文献后端：omni-gb7714（vendored fork，见 3rdparty/omni-gb7714/VENDORED.md）
 #import "../3rdparty/omni-gb7714/lib.typ": gb7714 as omni-gb7714, bibliography as omni-bibliography
-#import "../utils.typ": page-title
 
 // 全局引用样式：在正文开始前以 show 规则生效
 #let setup-bib(
@@ -55,12 +54,5 @@
   omni-bibliography(source, title: none, full: true, label: "achievements")
 }
 
-// 参考文献页
-#let references-page(
-  graduate: false,
-  english-writing: false,
-  bibliography: none,
-) = {
-  heading(level: 1, numbering: none, outlined: true)[#page-title("references", english-writing: english-writing)]
-  omni-bibliography(bibliography, title: none)
-}
+// 参考文献列表（只出列表，标题由 backmatter-page 统一提供）
+#let bibliography-list(bibliography) = omni-bibliography(bibliography, title: none)
