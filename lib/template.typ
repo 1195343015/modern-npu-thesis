@@ -11,16 +11,18 @@
 #import "pages/abstract.typ": abstract-page
 #import "pages/outline.typ": outline-page
 #import "pages/backmatter-page.typ": backmatter-page
-#import "pages/references.typ": bilingual-bibliography
+#import "pages/bibliography.typ": bilingual-bibliography, achievements-list
 #import "utils.typ": distribute, page-title
 
 #let default-bibliography(graduate) = {
   if not graduate {
-    "../template/bib/bachelor.bib"
+    "../template/bachelor/refs.bib"
   } else {
-    "../template/bib/graduate.bib"
+    "../template/graduate/refs.bib"
   }
 }
+
+#let default-achievements-bibliography() = "../template/graduate/achievements.bib"
 
 #let nwpu-thesis(
   graduate: false,
@@ -34,14 +36,15 @@
   abstract: (:),
   abstract-en: (:),
   acknowledgement: none,
-  academic-achievements: none,
+  bibliography: auto,
+  achievements-bibliography: auto,
   appendix: none,
-  scan-declaration: none,
+  scan-declaration: auto,
   design-summary: none,
   ref-par-indent: "none",
   body,
 ) = {
-  let bibliography = default-bibliography(graduate)
+  let bib-path = if bibliography == auto { default-bibliography(graduate) } else { none }
 
   // 1. 文稿设置
   show: doc.with(graduate: graduate)
@@ -68,7 +71,7 @@
   }
 
   show: init-gb7714.with(
-    read(bibliography),
+    if bib-path != none { read(bib-path) } else { "" },
     style: "numeric",
     version: "2025",
     zh-period: if not graduate { "．" },
@@ -131,11 +134,15 @@
   body
 
   // 6. 后置部分
-  bilingual-bibliography(
-    graduate: graduate,
-    english-writing: english-writing,
-    par-indent: ref-par-indent,
-  )
+  if bib-path != none {
+    backmatter-page(
+      "references",
+      graduate: graduate,
+      english-writing: english-writing,
+    )[
+      #bilingual-bibliography(graduate: graduate, par-indent: ref-par-indent)
+    ]
+  }
 
   if graduate and appendix != none {
     appendix-page(
@@ -152,11 +159,13 @@
     )[#acknowledgement]
   }
 
-  if graduate and academic-achievements != none {
+  if graduate and achievements-bibliography != none {
     backmatter-page(
       "academic-achievements",
       english-writing: english-writing,
-    )[#academic-achievements]
+    )[
+      #achievements-list(read(default-achievements-bibliography()), graduate: graduate, par-indent: ref-par-indent)
+    ]
   }
 
   if not graduate and design-summary != none {
@@ -180,9 +189,9 @@
   // 尾部独立页面（声明、封底）：统一无页眉页脚、无边距
   set page(margin: 0pt, header: none, footer: none)
 
-  if scan-declaration != none and graduate {
+  if scan-declaration == auto and graduate {
     page[
-      #scan-declaration
+      #image("../template/graduate/figures/硕博论文签字版声明.pdf")
       #box(width: 0pt, height: 0pt)
     ]
   }
@@ -205,3 +214,8 @@
     ]
   }
 }
+
+// 按学位预置的薄入口：graduate 是模板固有属性，不让用户在 main.typ 里开关；
+// 用户只需选 graduate-thesis / bachelor-thesis，再用 degree 选硕士/博士。
+#let graduate-thesis = nwpu-thesis.with(graduate: true)
+#let bachelor-thesis = nwpu-thesis.with(graduate: false)

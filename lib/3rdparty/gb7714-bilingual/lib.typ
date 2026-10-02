@@ -17,7 +17,8 @@
 
 // 导入内部实现
 #import "src/api.typ": (
-  gb7714-bibliography, get-all-entries, get-cited-entries, init-gb7714-impl,
+  gb7714-bibliography,
+  get-all-entries, get-cited-entries, init-gb7714-impl,
   multicite,
 )
 // 重新导出作者格式化工具，便于用户在 `full-control` 回调中复用默认的作者样式

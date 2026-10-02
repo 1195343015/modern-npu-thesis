@@ -479,6 +479,82 @@
   all-entries
 }
 
+/// 渲染一份“独立的第二张文献表”（如研究生成果页），复用与主参考文献表相同的
+/// style/version/config 与渲染器，但吃一份独立的 bib 内容、编号从 1 开始、
+/// label 前缀独立，从而与主表互不影响、可与主表共存于同一文档。
+///
+/// - bib-content: 该表自己的 BibTeX 内容（用 `read("x.bib")` 读取）
+/// - title: 标题（默认 none；`auto` 同 gb7714-bibliography 的语言自适应）
+/// - full-control: 与 gb7714-bibliography 同签名的自定义渲染回调，
+///   便于复用主参考文献页的逐类型定制排版
+/// - label: 独立 label 命名空间，避免与主表 `gb7714-ref-*` 及其它表冲突
+#let _gb7714-standalone-bibliography(
+  bib-content,
+  title: none,
+  full-control: none,
+  label: none,
+) = {
+  context {
+    let ns = if label != none { str(label) } else { "gb7714-sec" }
+    // 独立加载该表数据（不写回全局 _bib-data，主表不受影响）
+    let sec-bib = load-bibliography(bib-content, sentence-case-titles: false)
+    // 复用主表的全局风格/版本/配置，保证格式完全一致
+    let current-config = _config.get()
+    let current-style = _style.get()
+    let current-version = _version.get()
+
+    // 按 bib 文件顺序独立编号 1..n
+    let entries = sec-bib.keys().enumerate().map(((i, key)) => {
+      let entry = sec-bib.at(key)
+      let lang = detect-language(entry)
+      let rendered = render-entry(
+        entry,
+        lang,
+        year-suffix: "",
+        style: current-style,
+        version: current-version,
+        config: current-config,
+      )
+      let ref-label = std.label(ns + "-" + key)
+      (
+        key: key,
+        order: i + 1,
+        lang: lang,
+        entry-type: resolve-entry-type(entry),
+        raw-entry-type: entry.at("entry_type", default: "misc"),
+        fields: entry.at("fields", default: (:)),
+        parsed-names: entry.at("parsed_names", default: (:)),
+        rendered: rendered,
+        ref-label: ref-label,
+        labeled-rendered: [#rendered #ref-label],
+      )
+    })
+
+    let actual-title = title
+    if title == auto {
+      let is-chinese = text.lang == "zh"
+      actual-title = heading(numbering: none, if is-chinese { "参考文献" } else { "References" })
+    }
+    if actual-title != none { actual-title }
+
+    if full-control != none {
+      full-control(entries)
+    } else if current-style == "numeric" {
+      set par(hanging-indent: 2em, first-line-indent: 0em)
+      for e in entries {
+        [[#e.order]#h(0.5em)#e.labeled-rendered]
+        parbreak()
+      }
+    } else {
+      set par(hanging-indent: 2em, first-line-indent: 0em)
+      for e in entries {
+        e.labeled-rendered
+        parbreak()
+      }
+    }
+  }
+}
+
 // ============================================================================
 // 高层 API：开箱即用，符合 GB/T 7714 标准
 // ============================================================================
@@ -514,7 +590,7 @@
 ///   ]
 /// })
 /// ```
-#let gb7714-bibliography(
+#let _gb7714-main-bibliography(
   title: auto,
   full: false,
   full-control: none,
@@ -564,6 +640,34 @@
         parbreak()
       }
     }
+  }
+}
+
+/// 统一文献表入口（对齐 Typst `#bibliography` 的用法）：
+/// - 不带位置参数：渲染文档主文献表（`init-gb7714` 加载的数据）
+/// - 带一个 `bib-content` 位置参数：渲染一张“独立、从 [1] 重新编号、全量”的表
+///   （`label` 为其独立命名空间，可与主表及其它独立表共存于同一文档）
+///
+/// ```typst
+/// #gb7714-bibliography()                                   // 主表
+/// #gb7714-bibliography(read("pubs.bib"), label: "pubs")    // 独立第二表（成果等）
+/// ```
+#let gb7714-bibliography(
+  ..rest,
+  title: auto,
+  full: false,
+  label: none,
+  full-control: none,
+) = {
+  if rest.pos().len() > 0 {
+    _gb7714-standalone-bibliography(
+      rest.pos().at(0),
+      title: title,
+      label: label,
+      full-control: full-control,
+    )
+  } else {
+    _gb7714-main-bibliography(title: title, full: full, full-control: full-control)
   }
 }
 

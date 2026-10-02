@@ -15,8 +15,11 @@ Thumbs.db
 dist/
 .typst/
 *.pdf
-!template/figures/*.pdf
+!template/**/figures/*.pdf
 template/duibi/
 
 .claude/
 .qoder/
+
+# 本地 fork 的上游包开发副本
+_fork/
