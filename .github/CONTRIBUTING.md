@@ -35,13 +35,13 @@
 提交前建议至少完成一次模板编译检查：
 
 ```powershell
-typst compile --root . --font-path fonts template/graduate.typ dist/thesis.pdf
+typst compile --root . --font-path fonts template/graduate/main.typ dist/thesis.pdf
 ```
 
 如果你在验证模板包入口，也可以执行：
 
 ```powershell
-typst compile --root . --package-cache-path .typst/packages --font-path fonts template/graduate.typ dist/thesis-template.pdf
+typst compile --root . --package-cache-path .typst/packages --font-path fonts template/graduate/main.typ dist/thesis-template.pdf
 ```
 
 如果改动影响本科模板、页眉页脚、目录、参考文献、附录、封面等公共部分，建议同时检查本科与研究生示例。

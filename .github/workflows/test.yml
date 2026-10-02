@@ -58,8 +58,8 @@ jobs:
 
       - name: Compile repository example
         run: |
-          typst compile --root . --font-path fonts template/graduate.typ dist/graduate.pdf
-          typst compile --root . --font-path fonts template/bachelor.typ dist/bachelor.pdf
+          typst compile --root . --font-path fonts template/graduate/main.typ dist/graduate.pdf
+          typst compile --root . --font-path fonts template/bachelor/main.typ dist/bachelor.pdf
 
       - name: Upload PDF artifact
         if: matrix.os == 'ubuntu-latest'

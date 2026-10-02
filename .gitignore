@@ -20,3 +20,6 @@ template/duibi/
 
 .claude/
 .qoder/
+
+# 本地 fork 的上游包开发副本
+_fork/

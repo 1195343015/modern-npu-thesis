@@ -1,8 +1,8 @@
 #import "/template.typ": (
-  Assign, IfElseChain, Return, While, algorithm, capfig, capsubfig, captab, multicite, nwpu-thesis, zh
+  Assign, IfElseChain, Return, While, algorithm, capfig, capsubfig, captab, multicite, bachelor-thesis, zh
 )
 
-#show: nwpu-thesis.with(
+#show: bachelor-thesis.with(
   ref-par-indent: "none", // 参考文献段落格式："none" | "first-line" | "hanging"
   anonymous: false, // 是否开启盲审模式
   print-mode: true, // 是否开启印刷模式

@@ -24,7 +24,7 @@
 1. Fork 本仓库到自己的账号下，然后克隆 Fork 后的仓库。（方便后续同步模板更新。）
 2. 使用 VS Code 或类 VS Code 编辑器（如 Cursor、Qoder 等）打开项目，并安装 Tinymist Typst 插件。
 3. 打开项目后：
-   分别修改 [template/graduate.typ](template/graduate.typ) 和 [template/bachelor.typ](template/bachelor.typ) 可编辑研究生或本科生论文。
+   分别修改 [template/graduate/main.typ](template/graduate/main.typ) 和 [template/bachelor/main.typ](template/bachelor/main.typ) 可编辑研究生或本科生论文。
 
 非 Windows 系统用户需要另外下载 [`fonts`](https://github.com/1195343015/nwputhesis-fonts) 子模块。
 
@@ -39,7 +39,7 @@
 
 ### QQ 交流群
 
-<img src="template/figures/QQ交流群.png" width="200">
+<img src="template/graduate/figures/QQ交流群.png" width="200">
 
 > 本模板基于 [modern-nju-thesis](https://github.com/nju-lug/modern-nju-thesis) 开发，设计过程中还参考了 [pkuthss-typst](https://github.com/pku-typst/pkuthss-typst) 的实现。
 

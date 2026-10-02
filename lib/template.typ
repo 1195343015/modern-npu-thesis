@@ -16,16 +16,14 @@
 
 #let default-bibliography(graduate) = {
   if not graduate {
-    "../template/bib/bachelor.bib"
+    "../template/bachelor/refs.bib"
   } else {
-    "../template/bib/graduate.bib"
+    "../template/graduate/refs.bib"
   }
 }
 
-// 研究生成果页独立 bib；none 关闭，字符串覆盖路径
-#let default-achievements-bibliography() = {
-  "../template/bib/graduate-achievements.bib"
-}
+// 研究生成果页独立 bib（固定路径）
+#let default-achievements-bibliography() = "../template/graduate/achievements.bib"
 
 #let nwpu-thesis(
   graduate: false,
@@ -39,15 +37,15 @@
   abstract: (:),
   abstract-en: (:),
   acknowledgement: none,
-  academic-achievements: none,
+  bibliography: auto,
   achievements-bibliography: auto,
   appendix: none,
-  scan-declaration: none,
+  scan-declaration: auto,
   design-summary: none,
   ref-par-indent: "none",
   body,
 ) = {
-  let bibliography = default-bibliography(graduate)
+  let bib-path = if bibliography == auto { default-bibliography(graduate) } else { none }
 
   // 1. 文稿设置
   show: doc.with(graduate: graduate)
@@ -129,11 +127,13 @@
 
   // 6. 后置部分
   // ref-par-indent 保留参数但已无效：条目缩进由 omni 的 entry-first-line-indent 统一控制
-  references-page(
-    graduate: graduate,
-    english-writing: english-writing,
-    bibliography: read(bibliography),
-  )
+  if bib-path != none {
+    references-page(
+      graduate: graduate,
+      english-writing: english-writing,
+      bibliography: read(bib-path),
+    )
+  }
 
   if graduate and appendix != none {
     appendix-page(
@@ -150,20 +150,12 @@
     )[#acknowledgement]
   }
 
-  if graduate and academic-achievements != none {
-    let ach-bib = if achievements-bibliography == auto {
-      default-achievements-bibliography()
-    } else {
-      achievements-bibliography
-    }
+  if graduate and achievements-bibliography != none {
     backmatter-page(
       "academic-achievements",
       english-writing: english-writing,
     )[
-      #academic-achievements
-      #if ach-bib != none {
-        achievements-list(read(ach-bib))
-      }
+      #achievements-list(read(default-achievements-bibliography()))
     ]
   }
 
@@ -188,9 +180,9 @@
   // 尾部独立页面（声明、封底）：统一无页眉页脚、无边距
   set page(margin: 0pt, header: none, footer: none)
 
-  if scan-declaration != none and graduate {
+  if scan-declaration == auto and graduate {
     page[
-      #scan-declaration
+      #image("../template/graduate/figures/硕博论文签字版声明.pdf")
       #box(width: 0pt, height: 0pt)
     ]
   }
@@ -213,3 +205,7 @@
     ]
   }
 }
+
+// 按学位预置的薄入口：graduate 是模板固有属性，不让用户在 main.typ 里开关。
+#let graduate-thesis = nwpu-thesis.with(graduate: true)
+#let bachelor-thesis = nwpu-thesis.with(graduate: false)
