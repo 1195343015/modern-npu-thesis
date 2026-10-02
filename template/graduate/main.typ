@@ -52,6 +52,7 @@
     keywords: ("Keyword1", "Keyword2", "Keyword3", "Keyword4"),
     funding: "The present work is supported by the XXX（Project No.xxx）",
   ),
+  // bibliography: none, // 不渲染参考文献页（正文含 @cite 时勿置 none）
   appendix: [
     附录是学位论文主体的补充，并不是必需的。
 
@@ -62,7 +63,7 @@
     致谢是作者对该文章的形成作过贡献的组织或个人予以感谢的文字记载，语言要诚恳、恰当、简短。致谢内容可以包括但不限于：国家科学基金、资助研究工作的奖学金基金、合同单位、资助或支持的企业、组织或个人；协助完成研究工作和提供便利条件的组织或个人；在研究工作中提出建议和提供帮助的人；给予转载和引用权的资料、图片、文献、研究和调查的所有者；其他应感谢的组织和个人。
   ],
   // achievements-bibliography: none, // 不显示成果页；默认 auto 显示（读取 graduate/achievements.bib）
-  scan-declaration: image("figures/硕博论文签字版声明.pdf"),
+  // scan-declaration: none, // 不显示签字声明；默认 auto 显示内置 graduate/figures/硕博论文签字版声明.pdf
 )
 
 = 图、表、公式、算法示例

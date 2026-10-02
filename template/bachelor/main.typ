@@ -29,6 +29,7 @@
     ],
     keywords: ("virtual auditory", "HRTF", "neural network"),
   ),
+  // bibliography: none, // 不渲染参考文献页（正文含 @cite 时勿置 none）
   appendix: [
     附录内容……
   ],

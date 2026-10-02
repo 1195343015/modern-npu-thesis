@@ -36,14 +36,15 @@
   abstract: (:),
   abstract-en: (:),
   acknowledgement: none,
+  bibliography: auto,
   achievements-bibliography: auto,
   appendix: none,
-  scan-declaration: none,
+  scan-declaration: auto,
   design-summary: none,
   ref-par-indent: "none",
   body,
 ) = {
-  let bibliography = default-bibliography(graduate)
+  let bib-path = if bibliography == auto { default-bibliography(graduate) } else { none }
 
   // 1. 文稿设置
   show: doc.with(graduate: graduate)
@@ -70,7 +71,7 @@
   }
 
   show: init-gb7714.with(
-    read(bibliography),
+    if bib-path != none { read(bib-path) } else { "" },
     style: "numeric",
     version: "2025",
     zh-period: if not graduate { "．" },
@@ -133,13 +134,15 @@
   body
 
   // 6. 后置部分
-  backmatter-page(
-    "references",
-    graduate: graduate,
-    english-writing: english-writing,
-  )[
-    #bilingual-bibliography(graduate: graduate, par-indent: ref-par-indent)
-  ]
+  if bib-path != none {
+    backmatter-page(
+      "references",
+      graduate: graduate,
+      english-writing: english-writing,
+    )[
+      #bilingual-bibliography(graduate: graduate, par-indent: ref-par-indent)
+    ]
+  }
 
   if graduate and appendix != none {
     appendix-page(
@@ -186,9 +189,9 @@
   // 尾部独立页面（声明、封底）：统一无页眉页脚、无边距
   set page(margin: 0pt, header: none, footer: none)
 
-  if scan-declaration != none and graduate {
+  if scan-declaration == auto and graduate {
     page[
-      #scan-declaration
+      #image("../template/graduate/figures/硕博论文签字版声明.pdf")
       #box(width: 0pt, height: 0pt)
     ]
   }
