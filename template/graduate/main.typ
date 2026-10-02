@@ -9,7 +9,6 @@
   anonymous: false, // 是否开启盲审模式
   english-writing: false, // 是否用英文写作（国际研究生论文）
   colored-cover: true, // 是否启用彩色封面
-  // achievements-bibliography: none, // 不显示成果页；默认 auto 显示（读取 graduate/achievements.bib）
   info: (
     title: ("基于 Typst 的", "西北工业大学论文模板"),
     title-en: "This is a Northwestern Polytechnical University thesis template based on Typst",
@@ -62,6 +61,7 @@
   acknowledgement: [
     致谢是作者对该文章的形成作过贡献的组织或个人予以感谢的文字记载，语言要诚恳、恰当、简短。致谢内容可以包括但不限于：国家科学基金、资助研究工作的奖学金基金、合同单位、资助或支持的企业、组织或个人；协助完成研究工作和提供便利条件的组织或个人；在研究工作中提出建议和提供帮助的人；给予转载和引用权的资料、图片、文献、研究和调查的所有者；其他应感谢的组织和个人。
   ],
+  // achievements-bibliography: none, // 不显示成果页；默认 auto 显示（读取 graduate/achievements.bib）
   scan-declaration: image("figures/硕博论文签字版声明.pdf"),
 )
 
