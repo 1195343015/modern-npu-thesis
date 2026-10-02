@@ -16,13 +16,13 @@
 
 #let default-bibliography(graduate) = {
   if not graduate {
-    "../template/bib/bachelor.bib"
+    "../template/bachelor/refs.bib"
   } else {
-    "../template/bib/graduate.bib"
+    "../template/graduate/refs.bib"
   }
 }
 
-#let default-achievements-bibliography() = "../template/bib/graduate-achievements.bib"
+#let default-achievements-bibliography() = "../template/graduate/achievements.bib"
 
 #let nwpu-thesis(
   graduate: false,

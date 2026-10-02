@@ -15,7 +15,7 @@ Thumbs.db
 dist/
 .typst/
 *.pdf
-!template/figures/*.pdf
+!template/**/figures/*.pdf
 template/duibi/
 
 .claude/
