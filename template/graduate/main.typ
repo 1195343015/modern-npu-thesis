@@ -1,5 +1,5 @@
 #import "/template.typ": (
-  Assign, IfElseChain, Return, While, algorithm, capfig, capsubfig, captab, equation-note, multicite, graduate-thesis, zh,
+  Assign, IfElseChain, Return, While, algorithm, capfig, capsubfig, captab, equation-note, graduate-thesis, zh,
 )
 
 #show: graduate-thesis.with(
@@ -196,17 +196,7 @@ $ E = m c^2 $ <energy-mass>
 
 = 参考文献引用示例
 
-可以像这样引用参考文献@周融2003，引用两个的文献 #multicite("图书馆", "李大伦1998")，引用三个以上的文献 #multicite(
-  "伍蠡甫",
-  "张筑生",
-  "冯西桥1998",
-  "姜锡洲",
-  "gbt16159-1996",
-  "科学技术期刊管理办法",
-  "中国大学学报论文文摘",
-  "DUBAR2013--",
-  "FOURNEY",
-)。
+可以像这样引用参考文献@周融2003，引用两个的文献 @图书馆@李大伦1998，引用三个以上的文献 @伍蠡甫@张筑生@冯西桥1998@姜锡洲@gbt16159-1996@科学技术期刊管理办法@中国大学学报论文文摘@DUBAR2013--@FOURNEY。
 
 == 二级标题
 === 三级标题

@@ -1,9 +1,6 @@
 // 参考文献后端：omni-gb7714（vendored fork，见 3rdparty/omni-gb7714/VENDORED.md）
-#import "../3rdparty/omni-gb7714/lib.typ": gb7714 as omni-gb7714, bibliography as omni-bibliography, cite as omni-cite
+#import "../3rdparty/omni-gb7714/lib.typ": gb7714 as omni-gb7714, bibliography as omni-bibliography
 #import "../utils.typ": page-title
-
-// 兼容包装：multicite("k1", "k2") → 合并引用（omni 的 cite 接收 label）
-#let multicite(..keys) = omni-cite(..keys.pos().map(k => label(k)))
 
 // 全局引用样式：在正文开始前以 show 规则生效
 #let setup-bib(

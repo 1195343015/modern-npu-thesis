@@ -2,7 +2,7 @@
   Assign, Break, Comment, Else, ElseIf, For, Function, If, IfElseChain, Line, LineBreak, Procedure, Return, Terminate,
   While, capfig, capfig-style, capsubfig, captab, captab-style, zh,
 )
-#import "layouts/bib.typ": setup-bib, references-page, multicite, achievements-list
+#import "layouts/bib.typ": setup-bib, references-page, achievements-list
 #import "layouts/doc.typ": doc
 #import "layouts/floats.typ": algorithm, equation-note
 #import "layouts/mainmatter.typ": frontmatter, mainmatter
