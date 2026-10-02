@@ -1,10 +1,9 @@
 #import "/template.typ": (
-  Assign, IfElseChain, Return, While, algorithm, capfig, capsubfig, captab, equation-note, multicite, nwpu-thesis, zh,
+  Assign, IfElseChain, Return, While, algorithm, capfig, capsubfig, captab, equation-note, multicite, graduate-thesis, zh,
 )
 
-#show: nwpu-thesis.with(
+#show: graduate-thesis.with(
   ref-par-indent: "first-line", // 参考文献段落格式："none" | "first-line" | "hanging"
-  graduate: true,
   degree: "master", // "master" | "doctor"，研究生学位级别
   track: "professional", // "academic" | "professional"，培养类型
   anonymous: false, // 是否开启盲审模式

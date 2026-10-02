@@ -211,3 +211,8 @@
     ]
   }
 }
+
+// 按学位预置的薄入口：graduate 是模板固有属性，不让用户在 main.typ 里开关；
+// 用户只需选 graduate-thesis / bachelor-thesis，再用 degree 选硕士/博士。
+#let graduate-thesis = nwpu-thesis.with(graduate: true)
+#let bachelor-thesis = nwpu-thesis.with(graduate: false)
