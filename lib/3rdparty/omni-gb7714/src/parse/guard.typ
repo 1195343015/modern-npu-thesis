@@ -80,24 +80,25 @@
   tokens
 }
 
+// 定位助手：返回第一个满足 by 的下标，没有则返回长度。
+#let _g-pos(tail, by) = {
+  let p = tail.position(by)
+  if p == none { tail.len() } else { p }
+}
+
 #let _g-skip(nodes, i) = {
-  while i < nodes.len() and nodes.at(i).at(0) == "sp" { i += 1 }
-  i
+  let tail = nodes.slice(i)
+  i + _g-pos(tail, nd => nd.at(0) != "sp")
 }
 
 #let _g-read-value(nodes, i) = {
-  let v = ""
-  while i < nodes.len() {
-    let nd = nodes.at(i)
+  let tail = nodes.slice(i)
+  let stop = _g-pos(tail, nd => {
     let k = nd.at(0)
-    if k == "ident" or k == "text" { v += nd.at(1); i += 1 }
-    else if k == "punct" {
-      let c = nd.at(1)
-      if c == "&" or c == "?" or c == "!" or c == "=" { break }
-      v += c; i += 1
-    } else { break }
-  }
-  (v, i)
+    not (k == "ident" or k == "text" or k == "punct") or (k == "punct" and ("&", "?", "!", "=").contains(nd.at(1)))
+  })
+  let parts = tail.slice(0, stop).map(nd => nd.at(1))
+  (if parts.len() == 0 { "" } else { parts.join("") }, i + stop)
 }
 
 #let _g-is-field-start(nodes, i) = {
