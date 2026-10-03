@@ -5,10 +5,9 @@
 #import "@preview/auto-pinyin:0.1.0": to-pinyin
 
 #import "core/state.typ": (
-  _bib-data, _brace-protected, _cite-marker, _cn-first, _collect-citations,
+  _bib-data, _cite-marker, _cn-first, _collect-citations,
   _compute-year-suffixes, _config, _pinyin-override, _style, _version,
 )
-#import "bib-parser.typ": parse-bib-brace-protection
 #import "core/language.typ": detect-language
 #import "core/utils.typ": format-citation-numbers
 #import "versions/mod.typ": get-citation-config, get-version-config
@@ -39,7 +38,6 @@
   zh-period: none,
   zh-colon: none,
   zh-comma: none,
-  en-family-titlecase: false,
   range-sep: "-",
   doc,
 ) = {
@@ -49,7 +47,6 @@
   let bib-data = load-bibliography(bib-content, sentence-case-titles: false)
 
   // 解析花括号保护信息
-  _brace-protected.update(parse-bib-brace-protection(bib-content))
 
   // 设置状态
   _bib-data.update(bib-data)
@@ -62,7 +59,6 @@
     zh-period: zh-period,
     zh-colon: zh-colon,
     zh-comma: zh-comma,
-    en-family-titlecase: en-family-titlecase,
     range-sep: range-sep,
   ))
   _cn-first.update(cn-first)

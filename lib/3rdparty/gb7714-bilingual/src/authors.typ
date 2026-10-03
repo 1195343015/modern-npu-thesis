@@ -1,16 +1,7 @@
 // GB/T 7714 双语参考文献系统 - 作者格式化模块
 
 #import "versions/mod.typ": get-author-format-rules, get-terms
-#import "core/state.typ": _config, _brace-protected
-
-/// 检查 family name 是否在花括号保护列表中
-/// 支持精确匹配和前缀匹配（处理 citegeist 对 {SNN&DF} 拆分为 family=SNN 的情况）
-#let _is-family-protected(family, protected-families) = {
-  for pf in protected-families {
-    if pf == family or pf.starts-with(family) { return true }
-  }
-  false
-}
+#import "core/state.typ": _config
 
 /// 格式化作者列表
 /// - parsed-names: citegeist 解析的 parsed_names
@@ -18,14 +9,12 @@
 /// - version: 标准版本 ("2015" | "2025")
 /// - max-authors: 最多显示的作者数量，超过则显示 "等" / "et al."
 /// - allow-anonymous: 是否允许返回 "佚名"（默认 true）
-/// - entry-key: 条目 key，用于查找花括号保护信息
 #let format-authors(
   parsed-names,
   lang,
   version: "2025",
   max-authors: 3,
   allow-anonymous: true,
-  entry-key: none,
 ) = {
   let names = parsed-names.at("author", default: ())
   if names.len() == 0 {
@@ -66,18 +55,7 @@
       family + given
     } else {
       // 英文：根据版本规则决定大小写
-      let cfg = _config.get()
-      let en-titlecase = cfg.at("en-family-titlecase", default: false)
-      let family-case-fn = if rules.family-uppercase {
-        upper
-      } else if en-titlecase {
-        x => {
-          let bp = if entry-key != none { _brace-protected.get().at(entry-key, default: ()) } else { () }
-          if _is-family-protected(x, bp) { x } else { x.split("-").map(part => upper(part.first()) + lower(part.slice(1))).join("-") }
-        }
-      } else {
-        x => x
-      }
+      let family-case-fn = if rules.family-uppercase { upper } else { x => x }
 
       // prefix 作为姓的一部分（demote-non-dropping-particle="never"）
       // 但 prefix 始终保持原样，不受 text-case 影响

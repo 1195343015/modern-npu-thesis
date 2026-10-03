@@ -20,7 +20,7 @@
   let terms = get-terms(version, lang)
   let entry-type = lower(entry.entry_type)
 
-  let authors = format-authors(entry.parsed_names, lang, version: version, entry-key: entry.entry_key)
+  let authors = format-authors(entry.parsed_names, lang, version: version)
   let title = f.at("title", default: "")
   let booktitle = f.at("booktitle", default: "") // 析出文献的主书名
   let edition = f.at("edition", default: "")

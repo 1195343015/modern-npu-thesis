@@ -22,7 +22,7 @@
   let f = entry.fields
   let terms = get-terms(version, lang)
 
-  let authors = format-authors(entry.parsed_names, lang, version: version, entry-key: entry.entry_key)
+  let authors = format-authors(entry.parsed_names, lang, version: version)
   let title = f.at("title", default: "")
   // 2025 优先使用 eventtitle（会议名称），2015 使用 booktitle
   let booktitle = if version == "2025" {

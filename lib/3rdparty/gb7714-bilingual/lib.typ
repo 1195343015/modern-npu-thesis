@@ -49,7 +49,6 @@
   zh-period: none,
   zh-colon: none,
   zh-comma: none,
-  en-family-titlecase: false,
   range-sep: "-",
   doc,
 ) = {
@@ -66,7 +65,6 @@
     zh-period: zh-period,
     zh-colon: zh-colon,
     zh-comma: zh-comma,
-    en-family-titlecase: en-family-titlecase,
     range-sep: range-sep,
     doc,
   )

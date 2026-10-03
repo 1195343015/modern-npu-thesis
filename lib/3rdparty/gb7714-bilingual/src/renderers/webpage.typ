@@ -20,7 +20,7 @@
   let f = entry.fields
   let terms = get-terms(version, lang)
 
-  let authors = format-authors(entry.parsed_names, lang, version: version, entry-key: entry.entry_key)
+  let authors = format-authors(entry.parsed_names, lang, version: version)
   let title = f.at("title", default: "")
   let year = str(f.at("year", default: "")) + year-suffix
   // 发布日期

@@ -20,7 +20,7 @@
 
 #let render-custom-patent(entry, punct) = {
   let fields = entry.fields
-  let owner = format-authors(entry.parsed-names, entry.lang, entry-key: entry.key)
+  let owner = format-authors(entry.parsed-names, entry.lang)
   let title = fields.at("title", default: "")
   let country = fields.at("location", default: fields.at("address", default: ""))
   let patent-number = fields.at("number", default: fields.at("call-number", default: ""))
@@ -52,7 +52,7 @@
 #let render-custom-conference(entry, graduate: false, punct) = {
   let fields = entry.fields
   let lang = entry.lang
-  let author = format-authors(entry.parsed-names, lang, entry-key: entry.key)
+  let author = format-authors(entry.parsed-names, lang)
   let editor-names = entry.parsed-names.at("editor", default: ())
   let editor = if editor-names.len() > 0 { format-authors((author: (), editor: editor-names), lang) } else { "" }
   let title = fields.at("title", default: "")
@@ -115,7 +115,7 @@
 #let render-custom-other(entry, punct) = {
   let fields = entry.fields
   let lang = entry.lang
-  let author = format-authors(entry.parsed-names, entry.lang, entry-key: entry.key)
+  let author = format-authors(entry.parsed-names, entry.lang)
   let title = fields.at("title", default: "")
   let publish-date = str(fields.at("date", default: fields.at("year", default: fields.at("issued", default: fields.at("updated", default: "")))))
   let cited-date = str(fields.at("urldate", default: fields.at("accessed", default: "")))
@@ -150,7 +150,7 @@
 #let render-custom-standard(entry, punct) = {
   let fields = entry.fields
   let lang = entry.lang
-  let drafter = format-authors(entry.parsed-names, lang, allow-anonymous: false, entry-key: entry.key)
+  let drafter = format-authors(entry.parsed-names, lang, allow-anonymous: false)
   let standard-number = str(fields.at("number", default: fields.at("serial-number", default: "")))
   let title = fields.at("title", default: "")
   let location = fields.at("location", default: fields.at("address", default: ""))

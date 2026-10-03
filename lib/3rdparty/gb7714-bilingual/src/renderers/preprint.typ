@@ -50,7 +50,7 @@
   config: (show-url: true, show-doi: true, show-accessed: true),
 ) = {
   let f = entry.fields
-  let authors = format-authors(entry.parsed_names, lang, version: version, entry-key: entry.entry_key)
+  let authors = format-authors(entry.parsed_names, lang, version: version)
   let title = f.at("title", default: "")
   // plain-year: bare bib year, used for the （创建日期）fallback and for the
   // `created != plain-year` guard below.

@@ -19,7 +19,7 @@
   let f = entry.fields
   let entry-type = lower(entry.entry_type)
 
-  let authors = format-authors(entry.parsed_names, lang, version: version, entry-key: entry.entry_key)
+  let authors = format-authors(entry.parsed_names, lang, version: version)
   let title = f.at("title", default: "")
   let journal = f.at("journal", default: f.at("journaltitle", default: ""))
   let year = str(f.at("year", default: "")) + year-suffix

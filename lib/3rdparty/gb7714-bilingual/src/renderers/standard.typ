@@ -25,7 +25,6 @@
     lang,
     version: version,
     allow-anonymous: false,
-    entry-key: entry.entry_key,
   )
   let title = f.at("title", default: "")
   // 标准号
