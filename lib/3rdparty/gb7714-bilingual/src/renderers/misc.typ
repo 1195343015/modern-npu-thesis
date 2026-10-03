@@ -34,20 +34,6 @@
   )
   let punct = get-punctuation(version, lang)
 
-  // howpublished 缺失时回退标准字段 address/location + publisher
-  //（与 omni-gb7714 等按标准字段取出版项的栈对齐）
-  if howpublished == "" {
-    let address = f.at("address", default: f.at("location", default: ""))
-    let publisher = f.at("publisher", default: "")
-    if address != "" and publisher != "" {
-      howpublished = address + punct.colon + publisher
-    } else if address != "" {
-      howpublished = address
-    } else if publisher != "" {
-      howpublished = publisher
-    }
-  }
-
   render-base(
     entry,
     authors,
