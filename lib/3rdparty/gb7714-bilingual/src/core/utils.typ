@@ -1,5 +1,6 @@
 // GB/T 7714 双语参考文献系统 - 通用工具函数
 
+
 // ============================================================================
 //                        基础工具函数
 // ============================================================================
@@ -16,15 +17,13 @@
 }
 
 // 智能连接：避免 "et al.." 等双标点问题
-#let smart-join(parts, period: ".") = {
-  let sep = period + " "
-  let trailing = period
+#let smart-join(parts, sep: ". ", trailing: ".") = {
   (
     parts
       .map(p => {
         if (
           type(p) == str
-            and (p.ends-with(".") or p.ends-with("．") or p.ends-with(",") or p.ends-with(", ") or p.ends-with(";"))
+            and (p.ends-with(".") or p.ends-with("．") or p.ends-with(",") or p.ends-with(";"))
         ) {
           p.slice(0, -1)
         } else {
@@ -239,9 +238,10 @@
   let content-parts = build-content(year-in-pub)
   parts += content-parts
 
-  // 3. 组装并添加访问信息
-  let result = smart-join(parts, period: punct.at("period", default: "."))
-  append-access-info(result, entry, config: config, period: punct.at("period", default: "."))
+  // 3. 组装并添加访问信息（句号等宽度规则统一来自 punct）
+  let period = punct.at("period", default: ".")
+  let result = smart-join(parts, sep: period + " ", trailing: period)
+  append-access-info(result, entry, config: config, period: period)
 }
 
 /// 简单类型渲染器（适用于结构简单的类型）
@@ -310,6 +310,7 @@
   }
   ranges.push((start, end))
 
+  // GB/T 7714: 两篇及以上连续文献用 "-" 压缩
   ranges
     .map(((s, e)) => {
       if s == e { str(s) } else { str(s) + sep + str(e) }

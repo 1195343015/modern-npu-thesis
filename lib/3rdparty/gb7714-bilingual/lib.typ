@@ -25,6 +25,8 @@
 #import "src/authors.typ": format-author-intext, format-authors
 // 重新导出语言检测，便于用户按语言分支处理
 #import "src/core/language.typ": detect-language
+#import "src/versions/mod.typ": get-punctuation, get-terms
+#import "src/core/state.typ": _version
 
 /// 初始化 GB/T 7714 双语参考文献系统
 ///
@@ -46,10 +48,8 @@
   show-accessed: true,
   cn-first: true,
   pinyin-override: (:),
-  zh-period: none,
-  zh-colon: none,
-  zh-comma: none,
-  range-sep: "-",
+  range-tilde: false,
+  punct-width: auto,
   doc,
 ) = {
   // 调用内部实现
@@ -62,10 +62,14 @@
     show-accessed: show-accessed,
     cn-first: cn-first,
     pinyin-override: pinyin-override,
-    zh-period: zh-period,
-    zh-colon: zh-colon,
-    zh-comma: zh-comma,
-    range-sep: range-sep,
+    range-tilde: range-tilde,
+    punct-width: punct-width,
     doc,
   )
 }
+
+/// 取当前生效的标点配置：版本取自 init-gb7714，宽度取自 punct-width。
+/// 供外部自定义渲染器复用，避免各处再手写标点。
+#let punctuation-for(lang) = get-punctuation(_version.get(), lang)
+/// 取当前版本的语言术语（in-word、et al. 等），供外部自定义渲染器复用。
+#let terms-for(lang) = get-terms(_version.get(), lang)

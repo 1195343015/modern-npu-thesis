@@ -61,7 +61,8 @@
   // 题名[EB/OL]
   parts.push(title + type-id)
 
-  let result = smart-join(parts, period: punct.at("period", default: "."))
+  let period = punct.at("period", default: ".")
+  let result = smart-join(parts, sep: period + " ", trailing: period)
 
   // 发布日期和访问日期：CSL 格式 "题名[EB/OL].（发布日期）[访问日期]"
   // 发布日期括号使用集中配置
@@ -78,15 +79,13 @@
   }
   // 添加日期部分（用句号分隔）
   if date-part != "" {
-    let p = punct.at("period", default: ".")
-    result = result.trim(p) + p + date-part
+    result = result.trim(period) + period + date-part
   }
 
   // URL（网页文献的关键信息，可点击链接）
   if config.show-url and url != "" {
-    let p = punct.at("period", default: ".")
     let url-link = link(url, url)
-    result = [#result#p #url-link]
+    result = [#result#period #url-link]
   }
 
   // DOI

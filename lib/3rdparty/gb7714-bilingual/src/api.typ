@@ -26,6 +26,7 @@
 /// - cn-first: 仅 `style: "author-date"`。`true`（默认）中文条目排在外文之前，`false` 外文在前
 /// - pinyin-override: 仅 `author-date` 且中文条目。传给 `to-pinyin(..., style: "tone-num-end", override: ...)`；
 ///   override 中的音节须与 `tone-num-end` 形式一致（如 `cho2ng`），见 auto-pinyin 文档
+/// - punct-width: 著录标点宽度：`auto`（默认，跟随版本配置）/ `"half"`（全部半角）/ `"full"`（全部全角）
 #let init-gb7714-impl(
   bib-content,
   style: "numeric",
@@ -35,10 +36,8 @@
   show-accessed: true,
   cn-first: true,
   pinyin-override: (:),
-  zh-period: none,
-  zh-colon: none,
-  zh-comma: none,
-  range-sep: "-",
+  range-tilde: false,
+  punct-width: auto,
   doc,
 ) = {
   // 加载 bib 数据
@@ -56,10 +55,8 @@
     show-url: show-url,
     show-doi: show-doi,
     show-accessed: show-accessed,
-    zh-period: zh-period,
-    zh-colon: zh-colon,
-    zh-comma: zh-comma,
-    range-sep: range-sep,
+    range-tilde: range-tilde,
+    punct-width: punct-width,
   ))
   _cn-first.update(cn-first)
   _pinyin-override.update(pinyin-override)
@@ -767,7 +764,7 @@
     if current-style == "numeric" {
       // 顺序编码制：保持原始顺序，连续的无 supplement 引用压缩
       // 格式：[1：250, 2-4]（整体在一个方括号内，用逗号分隔）
-      let range-sep = _config.get().at("range-sep", default: "-")
+      let range-sep = if _config.get().at("range-tilde", default: false) { "~" } else { "-" }
       let parts = ()
       let pending-orders = () // 待压缩的编号
 

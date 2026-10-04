@@ -1,4 +1,4 @@
-#import "../deps.typ": gb7714-bibliography, format-authors
+#import "../deps.typ": gb7714-bibliography, format-authors, punctuation-for, terms-for
 #import "../utils.typ": page-title
 
 #let is-other-entry(entry) = {
@@ -61,7 +61,7 @@
   let publisher = fields.at("publisher", default: fields.at("institution", default: ""))
   let year = str(fields.at("year", default: fields.at("date", default: "")))
   let pages = str(fields.at("pages", default: "")).replace("--", "-")
-  let in-prefix = if lang == "zh" { "见；" } else { "In; " }
+  let in-prefix = terms-for(lang).at("in-word") + punct.semicolon
 
   let body = []
   if author != "" {
@@ -114,7 +114,6 @@
 
 #let render-custom-other(entry, punct) = {
   let fields = entry.fields
-  let lang = entry.lang
   let author = format-authors(entry.parsed-names, entry.lang)
   let title = fields.at("title", default: "")
   let publish-date = str(fields.at("date", default: fields.at("year", default: fields.at("issued", default: fields.at("updated", default: "")))))
@@ -220,11 +219,7 @@
     }
   }
   for entry in entries {
-    let punct = if graduate or entry.lang == "en" {
-      (period: ".", comma: ", ", colon: ": ")
-    } else {
-      (period: "．", comma: "，", colon: "：")
-    }
+    let punct = punctuation-for(entry.lang)
     if par-indent == "first-line" {
       set par(first-line-indent: (amount: 2em, all: true))
       [[#entry.order]#h(0.5em)#render-one(entry, punct)]

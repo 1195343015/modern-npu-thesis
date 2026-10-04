@@ -13,7 +13,8 @@
   show-url: true, // 是否显示 URL
   show-doi: true, // 是否显示 DOI
   show-accessed: true, // 是否显示访问日期
-  range-sep: "-", // 连续文献编号的分隔符
+  range-tilde: false, // 连续编号区间改用 ~ 连接（默认用 -）
+  punct-width: auto, // 标点宽度：auto / "half" / "full"
 ))
 
 

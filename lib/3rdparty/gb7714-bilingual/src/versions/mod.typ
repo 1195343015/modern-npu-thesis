@@ -1,8 +1,8 @@
 // GB/T 7714 双语参考文献系统 - 版本配置入口
 
 #import "v2015.typ": config-2015
-#import "v2025.typ": config-2025
 #import "../core/state.typ": _config
+#import "v2025.typ": config-2025
 
 // 版本 -> 配置映射
 #let _configs = (
@@ -32,25 +32,24 @@
 }
 
 /// 获取标点符号配置
-/// 可通过 init-gb7714 的 zh-period / zh-colon 参数覆盖中文标点
 #let get-punctuation(version, lang) = {
   let punct = get-version-config(version).punctuation
-  if lang == "en" {
+  // punct-width: auto 跟随版本配置；"half" 全部半角；"full" 全部全角
+  let width = _config.get().at("punct-width", default: auto)
+  if width == "half" {
     punct.insert("period", ".")
-  } else if lang == "zh" {
-    let cfg = _config.get()
-    let zh-period = cfg.at("zh-period", default: none)
-    if zh-period != none {
-      punct.insert("period", zh-period)
-    }
-    let zh-colon = cfg.at("zh-colon", default: none)
-    if zh-colon != none {
-      punct.insert("colon", zh-colon)
-    }
-    let zh-comma = cfg.at("zh-comma", default: none)
-    if zh-comma != none {
-      punct.insert("comma", zh-comma)
-    }
+    punct.insert("comma", ", ")
+    punct.insert("colon", ": ")
+    punct.insert("lparen", "(")
+    punct.insert("rparen", ")")
+    punct.insert("semicolon", "; ")
+  } else if width == "full" {
+    punct.insert("period", "．")
+    punct.insert("comma", "，")
+    punct.insert("colon", "：")
+    punct.insert("lparen", "（")
+    punct.insert("rparen", "）")
+    punct.insert("semicolon", "；")
   }
   punct
 }

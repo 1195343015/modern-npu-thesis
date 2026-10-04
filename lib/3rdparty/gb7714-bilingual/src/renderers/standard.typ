@@ -90,6 +90,7 @@
     parts.push(pub-info)
   }
 
-  let result = smart-join(parts, period: punct.at("period", default: "."))
-  append-access-info(result, entry, config: config, period: punct.at("period", default: "."))
+  let period = punct.at("period", default: ".")
+  let result = smart-join(parts, sep: period + " ", trailing: period)
+  append-access-info(result, entry, config: config, period: period)
 }

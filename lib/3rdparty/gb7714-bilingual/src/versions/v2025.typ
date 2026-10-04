@@ -6,11 +6,12 @@
   name: "GB/T 7714—2025",
   // 标点符号（2025 统一使用中文全角标点）
   punctuation: (
-    comma: ", ",
-    colon: ": ",
-    lparen: "(",
-    rparen: ")",
+    comma: "，",
+    colon: "：",
+    lparen: "（",
+    rparen: "）",
     period: ".",
+    semicolon: "；",
   ),
   // 作者格式化规则
   author-format: (

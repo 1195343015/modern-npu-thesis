@@ -74,10 +74,9 @@
     if bib-path != none { read(bib-path) } else { "" },
     style: "numeric",
     version: "2025",
-    zh-period: if not graduate { "．" },
-    zh-colon: if not graduate { "： " },
-    zh-comma: if not graduate { "，" },
-    range-sep: if not graduate { "~" } else { "-" },
+    range-tilde: not graduate, // 本科连续编号用 ~ 连接
+    // 研究生：著录标点全部半角；本科：著录标点全部全角（含句号 `．`）
+    punct-width: if graduate { "half" } else { "full" },
   )
 
   // 3. mainmatter 包裹所有后续内容（前置 + 正文 + 后置）
