@@ -1,6 +1,5 @@
 // GB/T 7714 双语参考文献系统 - 通用工具函数
 
-
 // ============================================================================
 //                        基础工具函数
 // ============================================================================
@@ -238,7 +237,7 @@
   let content-parts = build-content(year-in-pub)
   parts += content-parts
 
-  // 3. 组装并添加访问信息（句号等宽度规则统一来自 punct）
+  // 3. 组装并添加访问信息
   let period = punct.at("period", default: ".")
   let result = smart-join(parts, sep: period + " ", trailing: period)
   append-access-info(result, entry, config: config, period: period)

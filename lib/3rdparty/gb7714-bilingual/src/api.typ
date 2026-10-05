@@ -5,7 +5,8 @@
 #import "@preview/auto-pinyin:0.1.0": to-pinyin
 
 #import "core/state.typ": (
-  _bib-data, _bib-raw, _has-table, _cite-marker, _cn-first, _collect-citations,
+  _bib-raw, _has-table,
+  _bib-data, _cite-marker, _cn-first, _collect-citations,
   _compute-year-suffixes, _config, _pinyin-override, _style, _version,
 )
 #import "core/language.typ": detect-language
@@ -26,7 +27,12 @@
 /// - cn-first: 仅 `style: "author-date"`。`true`（默认）中文条目排在外文之前，`false` 外文在前
 /// - pinyin-override: 仅 `author-date` 且中文条目。传给 `to-pinyin(..., style: "tone-num-end", override: ...)`；
 ///   override 中的音节须与 `tone-num-end` 形式一致（如 `cho2ng`），见 auto-pinyin 文档
+/// - range-tilde: 顺序编码制下连续编号区间改用 "~" 连接（默认 false，即用 "-"）
 /// - punct-width: 著录标点宽度：`auto`（默认，跟随版本配置）/ `"half"`（全部半角）/ `"full"`（全部全角）
+/// - bib-title: 为文档内所有文献表注册默认标题（`none` 表示一律不显示），
+///   默认 `auto` 即不设置；`gb7714-bibliography(title:)` 显式传参优先于此。
+/// - bib-full-control: 为文档内所有文献表注册默认渲染回调，签名 `(entries) => content`，
+///   默认 `auto` 即不设置；`gb7714-bibliography(full-control:)` 显式传参优先于此。
 #let init-gb7714-impl(
   bib-content,
   style: "numeric",
@@ -180,10 +186,9 @@
 
   doc
 
-  // 隐藏的 bibliography 让 Typst 识别 `@key` 引用语法。正常情况下它由第一张文献表
-  // 在自己的位置注册（见 gb7714-bibliography），这里只在整篇没有任何表时兜底：
-  // 放在 doc 之前会让 pagebreak(weak: true, to: "odd") 生效而产生开头空白页（#13），
-  // 无条件追加又会在文档结尾 set page(...) 之后多出一页（#22）。
+  // 仅当文档内没有任何文献表时，才在末尾注册 @key 所需的原生表。
+  // 放在末尾是因为任何前置内容都会让 pagebreak(weak: true, to: "odd") 生效（#13）；
+  // 而无条件追加又会在用户结尾 set page(...) 之后多出一页（#22），故改为条件回落。
   context {
     if not _has-table.get() {
       hide(place(bibliography(bytes(_bib-raw.get()), title: none)))
@@ -541,8 +546,8 @@
   full-control: auto,
 ) = {
   context {
-    // 在第一张表的位置注册 @key 所需的原生表：这里已有用户内容，不会额外开页，
-    // 也不会在文档开头产生内容。多张表只注册一次，避免同一 key 的 label 重复。
+    // 在第一张表的位置注册 @key 所需的原生表：此处已有用户内容，不会额外开页，
+    // 也不在文档开头产生内容（避免 #13）。多张表只注册一次，防止 label 重复。
     let first-table = not _has-table.get()
     _has-table.update(true)
     if first-table {
@@ -706,9 +711,9 @@
     if current-style == "numeric" {
       // 顺序编码制：保持原始顺序，连续的无 supplement 引用压缩
       // 格式：[1：250, 2-4]（整体在一个方括号内，用逗号分隔）
-      let range-sep = if _config.get().at("range-tilde", default: false) { "~" } else { "-" }
       let parts = ()
       let pending-orders = () // 待压缩的编号
+      let range-sep = if _config.get().at("range-tilde", default: false) { "~" } else { "-" }
 
       for item in normalized {
         let order = citations.at(item.key, default: 0)

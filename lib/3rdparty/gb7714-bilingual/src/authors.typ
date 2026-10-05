@@ -33,7 +33,7 @@
   let terms = get-terms(version, lang)
   let rules = get-author-format-rules(version)
 
-  // 作者分隔符统一取自标点配置（2015 ", " / 2025 "，"，并跟随 punct-width）
+  // 作者分隔符取自标点配置（2015 ", " / 2025 "，"，并跟随 punct-width）
   let delimiter = get-punctuation(version, lang).comma
 
   // 格式化单个名字

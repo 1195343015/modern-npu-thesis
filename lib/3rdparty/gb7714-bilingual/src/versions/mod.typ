@@ -1,8 +1,8 @@
 // GB/T 7714 双语参考文献系统 - 版本配置入口
 
 #import "v2015.typ": config-2015
-#import "../core/state.typ": _config
 #import "v2025.typ": config-2025
+#import "../core/state.typ": _config
 
 // 版本 -> 配置映射
 #let _configs = (

@@ -61,18 +61,19 @@
     show-url: show-url,
     show-doi: show-doi,
     show-accessed: show-accessed,
-    cn-first: cn-first,
-    pinyin-override: pinyin-override,
     range-tilde: range-tilde,
     punct-width: punct-width,
     bib-title: bib-title,
     bib-full-control: bib-full-control,
+    cn-first: cn-first,
+    pinyin-override: pinyin-override,
     doc,
   )
 }
 
-/// 取当前生效的标点配置：版本取自 init-gb7714，宽度取自 punct-width。
-/// 供外部自定义渲染器复用，避免各处再手写标点。
+/// 取当前生效的标点配置（版本取自 init-gb7714，宽度取自 punct-width）。
+/// 供 `full-control` 等自定义渲染场景复用，避免各处手写标点。
 #let punctuation-for(lang) = get-punctuation(_version.get(), lang)
-/// 取当前版本的语言术语（in-word、et al. 等），供外部自定义渲染器复用。
+
+/// 取当前版本的语言术语（`in-word` 等），同样供自定义渲染复用。
 #let terms-for(lang) = get-terms(_version.get(), lang)
