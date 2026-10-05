@@ -1,5 +1,4 @@
-#import "../deps.typ": gb7714-bibliography, format-authors, punctuation-for, terms-for
-#import "../utils.typ": page-title
+#import "../deps.typ": format-authors, punctuation-for, terms-for
 
 #let is-other-entry(entry) = {
   let raw-type = lower(str(entry.raw-entry-type))
@@ -232,28 +231,4 @@
     }
     parbreak()
   }
-}
-
-// 成果页：从独立 bib 渲染一张“独立编号、全量”的表；与参考页共用渲染器与 backmatter-page 入口。
-#let achievements-list(source, graduate: false, par-indent: "none") = {
-  gb7714-bibliography(
-    source,
-    title: none,
-    label: "achievements",
-    full-control: gb7714-entries-renderer(graduate: graduate, par-indent: par-indent),
-  )
-}
-
-#let bilingual-bibliography(
-  graduate: false,
-  full: false,
-  par-indent: "none",
-) = {
-  gb7714-bibliography(
-    title: none,
-    full: full,
-    full-control: gb7714-entries-renderer(graduate: graduate, par-indent: par-indent),
-  )
-}
-  )
 }

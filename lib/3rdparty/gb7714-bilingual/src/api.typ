@@ -38,14 +38,14 @@
   pinyin-override: (:),
   range-tilde: false,
   punct-width: auto,
+  bib-title: auto,
+  bib-full-control: auto,
   doc,
 ) = {
   // 加载 bib 数据
   // sentence-case-titles: false 避免 citegeist 将英文标题转为 sentence case
   // （否则如 "Neural Networks for Text Classification" 会变为 "Neural networks for text classification"）
   let bib-data = load-bibliography(bib-content, sentence-case-titles: false)
-
-  // 解析花括号保护信息
 
   // 设置状态
   _bib-data.update(bib-data)
@@ -57,6 +57,8 @@
     show-accessed: show-accessed,
     range-tilde: range-tilde,
     punct-width: punct-width,
+    bib-title: bib-title,
+    bib-full-control: bib-full-control,
   ))
   _cn-first.update(cn-first)
   _pinyin-override.update(pinyin-override)
@@ -292,6 +294,97 @@
   }
 }
 
+/// 构造单条文献记录（主表与独立表共用），字段含义见 `get-cited-entries()`。
+/// - suffixes: 年份后缀消歧表；顺序编码制下不需要消歧，传空即可
+/// - label-prefix: `ref-label` 的命名空间前缀，主表为 "gb7714-ref-"
+/// - is-cited: 仅 `full` 列表需要标记；为 none 时不附加该字段
+#let _build-entry-record(
+  bib,
+  key,
+  order,
+  style: "numeric",
+  version: "2025",
+  config: (show-url: true, show-doi: true, show-accessed: true),
+  suffixes: (:),
+  label-prefix: "gb7714-ref-",
+  is-cited: none,
+) = {
+  let entry = bib.at(key, default: none)
+  if entry == none { return none }
+
+  let lang = detect-language(entry)
+  // 顺序编码制不需要年份后缀消歧（用编号区分）
+  let year-suffix = if style == "numeric" {
+    ""
+  } else {
+    suffixes.at(key, default: "")
+  }
+  let rendered = render-entry(
+    entry,
+    lang,
+    year-suffix: year-suffix,
+    style: style,
+    version: version,
+    config: config,
+  )
+  let ref-label = label(label-prefix + key)
+  let record = (
+    key: key,
+    order: order,
+    year-suffix: year-suffix,
+    lang: lang,
+    entry-type: resolve-entry-type(entry),
+    raw-entry-type: entry.at("entry_type", default: "misc"),
+    fields: entry.at("fields", default: (:)),
+    parsed-names: entry.at("parsed_names", default: (:)),
+    rendered: rendered,
+    // 便捷字段：用于链接跳转
+    ref-label: ref-label, // label 对象，用法：[内容 #e.ref-label]
+    labeled-rendered: [#rendered #ref-label], // 已附加 label 的渲染结果
+  )
+  if is-cited != none { record.insert("is-cited", is-cited) }
+  record
+}
+
+/// 渲染文献表列表（主表与独立表共用）：标题处理 + 三种排版分支。
+/// - title: `auto` 按正文语言取“参考文献 / References”；`none` 不显示；其余按内容渲染
+/// - full-control: 传入则完全交给用户渲染
+#let _render-entry-list(
+  entries,
+  title: auto,
+  style: "numeric",
+  full-control: none,
+) = {
+  let actual-title = title
+  if title == auto {
+    let is-chinese = text.lang == "zh"
+    actual-title = heading(numbering: none, if is-chinese {
+      "参考文献"
+    } else { "References" })
+  }
+  if actual-title != none {
+    actual-title
+  }
+
+  if full-control != none {
+    full-control(entries)
+  } else if style == "numeric" {
+    // 顺序编码制：悬挂缩进
+    set par(hanging-indent: 2em, first-line-indent: 0em)
+    for e in entries {
+      [[#e.order]#h(0.5em)#e.labeled-rendered]
+      parbreak()
+    }
+  } else {
+    // 著者-出版年制：悬挂缩进
+    set par(hanging-indent: 2em, first-line-indent: 0em)
+    for e in entries {
+      e.labeled-rendered
+      parbreak()
+    }
+  }
+}
+
 #let get-cited-entries(
   config: (show-url: true, show-doi: true, show-accessed: true),
 ) = {
@@ -303,42 +396,15 @@
 
   let entries = citations
     .pairs()
-    .map(((key, order)) => {
-      let entry = bib.at(key, default: none)
-      if entry == none { return none }
-
-      let lang = detect-language(entry)
-      // 顺序编码制不需要年份后缀消歧（用编号区分）
-      let year-suffix = if current-style == "numeric" {
-        ""
-      } else {
-        suffixes.at(key, default: "")
-      }
-      let rendered = render-entry(
-        entry,
-        lang,
-        year-suffix: year-suffix,
-        style: current-style,
-        version: current-version,
-        config: config,
-      )
-
-      let ref-label = label("gb7714-ref-" + key)
-      (
-        key: key,
-        order: order,
-        year-suffix: year-suffix,
-        lang: lang,
-        entry-type: resolve-entry-type(entry),
-        raw-entry-type: entry.at("entry_type", default: "misc"),
-        fields: entry.at("fields", default: (:)),
-        parsed-names: entry.at("parsed_names", default: (:)),
-        rendered: rendered,
-        // 便捷字段：用于链接跳转
-        ref-label: ref-label, // label 对象，用法：[内容 #e.ref-label]
-        labeled-rendered: [#rendered #ref-label], // 已附加 label 的渲染结果
-      )
-    })
+    .map(((key, order)) => _build-entry-record(
+      bib,
+      key,
+      order,
+      style: current-style,
+      version: current-version,
+      config: config,
+      suffixes: suffixes,
+    ))
     .filter(x => x != none)
 
   // 排序；著者-出版年制下列表顺序按姓排序，`order` 与列表顺序一致
@@ -375,41 +441,17 @@
   // 处理被引用的条目（按引用顺序）
   let cited-entries = cited-keys
     .enumerate()
-    .map(((i, key)) => {
-      let entry = bib.at(key)
-      let lang = detect-language(entry)
-
-      // 顺序编码制不需要年份后缀消歧（用编号区分）
-      let year-suffix = if current-style == "numeric" {
-        ""
-      } else {
-        suffixes.at(key, default: "")
-      }
-      let rendered = render-entry(
-        entry,
-        lang,
-        year-suffix: year-suffix,
-        style: current-style,
-        version: current-version,
-        config: config,
-      )
-
-      let ref-label = label("gb7714-ref-" + key)
-      (
-        key: key,
-        order: i + 1,
-        year-suffix: year-suffix,
-        lang: lang,
-        entry-type: resolve-entry-type(entry),
-        raw-entry-type: entry.at("entry_type", default: "misc"),
-        fields: entry.at("fields", default: (:)),
-        parsed-names: entry.at("parsed_names", default: (:)),
-        rendered: rendered,
-        ref-label: ref-label,
-        labeled-rendered: [#rendered #ref-label],
-        is-cited: true,
-      )
-    })
+    .map(((i, key)) => _build-entry-record(
+      bib,
+      key,
+      i + 1,
+      style: current-style,
+      version: current-version,
+      config: config,
+      suffixes: suffixes,
+      is-cited: true,
+    ))
+    .filter(x => x != none)
 
   // 处理未被引用的条目
   let bib-keys = bib.keys()
@@ -419,41 +461,17 @@
 
   let uncited-entries = uncited-keys
     .enumerate()
-    .map(((i, key)) => {
-      let entry = bib.at(key)
-      let lang = detect-language(entry)
-
-      // 顺序编码制不需要年份后缀消歧（用编号区分）
-      let year-suffix = if current-style == "numeric" {
-        ""
-      } else {
-        suffixes.at(key, default: "")
-      }
-      let rendered = render-entry(
-        entry,
-        lang,
-        year-suffix: year-suffix,
-        style: current-style,
-        version: current-version,
-        config: config,
-      )
-
-      let ref-label = label("gb7714-ref-" + key)
-      (
-        key: key,
-        order: cited-count + i + 1,
-        year-suffix: year-suffix,
-        lang: lang,
-        entry-type: resolve-entry-type(entry),
-        raw-entry-type: entry.at("entry_type", default: "misc"),
-        fields: entry.at("fields", default: (:)),
-        parsed-names: entry.at("parsed_names", default: (:)),
-        rendered: rendered,
-        ref-label: ref-label,
-        labeled-rendered: [#rendered #ref-label],
-        is-cited: false,
-      )
-    })
+    .map(((i, key)) => _build-entry-record(
+      bib,
+      key,
+      cited-count + i + 1,
+      style: current-style,
+      version: current-version,
+      config: config,
+      suffixes: suffixes,
+      is-cited: false,
+    ))
+    .filter(x => x != none)
 
   // 合并并排序
   let all-entries = cited-entries + uncited-entries
@@ -472,110 +490,35 @@
   all-entries
 }
 
-/// 渲染一份“独立的第二张文献表”（如研究生成果页），复用与主参考文献表相同的
-/// style/version/config 与渲染器，但吃一份独立的 bib 内容、编号从 1 开始、
-/// label 前缀独立，从而与主表互不影响、可与主表共存于同一文档。
-///
-/// - bib-content: 该表自己的 BibTeX 内容（用 `read("x.bib")` 读取）
-/// - title: 标题（默认 none；`auto` 同 gb7714-bibliography 的语言自适应）
-/// - full-control: 与 gb7714-bibliography 同签名的自定义渲染回调，
-///   便于复用主参考文献页的逐类型定制排版
-/// - label: 独立 label 命名空间，避免与主表 `gb7714-ref-*` 及其它表冲突
-#let _gb7714-standalone-bibliography(
-  bib-content,
-  title: none,
-  full-control: none,
-  label: none,
-) = {
-  context {
-    let ns = if label != none { str(label) } else { "gb7714-sec" }
-    // 独立加载该表数据（不写回全局 _bib-data，主表不受影响）
-    let sec-bib = load-bibliography(bib-content, sentence-case-titles: false)
-    // 复用主表的全局风格/版本/配置，保证格式完全一致
-    let current-config = _config.get()
-    let current-style = _style.get()
-    let current-version = _version.get()
-
-    // 按 bib 文件顺序独立编号 1..n
-    let entries = sec-bib.keys().enumerate().map(((i, key)) => {
-      let entry = sec-bib.at(key)
-      let lang = detect-language(entry)
-      let rendered = render-entry(
-        entry,
-        lang,
-        year-suffix: "",
-        style: current-style,
-        version: current-version,
-        config: current-config,
-      )
-      let ref-label = std.label(ns + "-" + key)
-      (
-        key: key,
-        order: i + 1,
-        lang: lang,
-        entry-type: resolve-entry-type(entry),
-        raw-entry-type: entry.at("entry_type", default: "misc"),
-        fields: entry.at("fields", default: (:)),
-        parsed-names: entry.at("parsed_names", default: (:)),
-        rendered: rendered,
-        ref-label: ref-label,
-        labeled-rendered: [#rendered #ref-label],
-      )
-    })
-
-    let actual-title = title
-    if title == auto {
-      let is-chinese = text.lang == "zh"
-      actual-title = heading(numbering: none, if is-chinese { "参考文献" } else { "References" })
-    }
-    if actual-title != none { actual-title }
-
-    if full-control != none {
-      full-control(entries)
-    } else if current-style == "numeric" {
-      set par(hanging-indent: 2em, first-line-indent: 0em)
-      for e in entries {
-        [[#e.order]#h(0.5em)#e.labeled-rendered]
-        parbreak()
-      }
-    } else {
-      set par(hanging-indent: 2em, first-line-indent: 0em)
-      for e in entries {
-        e.labeled-rendered
-        parbreak()
-      }
-    }
-  }
-}
-
 // ============================================================================
 // 高层 API：开箱即用，符合 GB/T 7714 标准
 // ============================================================================
 
 /// 渲染参考文献列表（高层 API）
 ///
+/// - bib-content: 要渲染的 BibTeX 内容。缺省时使用 `init-gb7714` 注册的文献库
+///   （即正文 `@key` 所依据的那份），并按引用情况编号；传入时渲染该文献库的全部
+///   条目、从 `[1]` 重新编号，且不影响前者 —— 用于成果页等第二张文献表。
 /// - title: 参考文献标题
 ///   - `auto`（默认）：根据正文语言自动选择（"参考文献" 或 "References"），一级标题
 ///   - `none`：不显示标题
 ///   - 自定义内容：直接显示（可传入 `heading(level: 2)[...]` 控制级别）
-/// - full: 是否显示所有参考文献（即使未被引用），默认 false
-/// - full-control: 完全控制渲染的回调函数（可选）
-///   - 签名：`(entries) => content`
-///   - entries: 由 `get-cited-entries()` 返回的数组
-///   - 使用此参数时，库只负责提供数据，用户完全控制输出
+/// - full: 是否显示所有参考文献（即使未被引用），默认 false；
+///   传入 `bib-content` 时该表本就全量渲染，此参数被忽略
+/// - title 与 full-control 的取值优先级：本次调用显式传参 > `init-gb7714` 注册的
+///   `bib-title` / `bib-full-control` > 内置行为（`title: auto` 按语言生成标题、
+///   `full-control` 用内置排版）。
+/// - label: 独立表的 label 命名空间（默认 `gb7714-sec`），避免与主表
+///   `gb7714-ref-*` 及其它独立表冲突；仅在使用 `bib-content` 时生效
+/// - full-control: 完全控制渲染的回调函数，签名 `(entries) => content`
 ///
 /// 使用方法：
 /// ```typst
-/// // 标准用法
-/// #gb7714-bibliography()
-///
-/// // 自定义标题级别
-/// #gb7714-bibliography(title: heading(level: 2)[参考文献])
-///
-/// // 显示所有参考文献（即使未被引用）
-/// #gb7714-bibliography(full: true)
-///
-/// // 完全自定义渲染
+/// #gb7714-bibliography()                                    // 主表
+/// #gb7714-bibliography(full: true)                          // 主表，含未引用条目
+/// #gb7714-bibliography(title: heading(level: 2)[参考文献])   // 自定义标题
+/// #gb7714-bibliography(bib-content: read("pubs.bib"),       // 独立第二张表
+///                      label: "pubs", title: none)
 /// #gb7714-bibliography(full-control: entries => {
 ///   for e in entries [
 ///     [#e.order]#h(0.5em)#e.rendered
@@ -583,84 +526,69 @@
 ///   ]
 /// })
 /// ```
-#let _gb7714-main-bibliography(
-  title: auto,
-  full: false,
-  full-control: none,
-) = {
-  context {
-    let bib = _bib-data.get()
-
-    // 处理 auto 标题 - 基于正文语言而非文献语言
-    let actual-title = title
-    if title == auto {
-      let text-lang = text.lang
-      let is-chinese = text-lang == "zh"
-      actual-title = heading(numbering: none, if is-chinese {
-        "参考文献"
-      } else { "References" })
-    }
-
-    // 显示标题
-    if actual-title != none {
-      actual-title
-    }
-
-    let current-config = _config.get()
-    // 根据 full 参数选择获取所有条目或仅获取被引用的条目
-    let entries = if full {
-      get-all-entries(config: current-config)
-    } else {
-      get-cited-entries(config: current-config)
-    }
-    let current-style = _style.get()
-
-    // 如果用户提供了 full-control，完全交给用户
-    if full-control != none {
-      full-control(entries)
-    } else if current-style == "numeric" {
-      // 顺序编码制：悬挂缩进
-      set par(hanging-indent: 2em, first-line-indent: 0em)
-      for e in entries {
-        [[#e.order]#h(0.5em)#e.labeled-rendered]
-        parbreak()
-      }
-    } else {
-      // 著者-出版年制：悬挂缩进
-      set par(hanging-indent: 2em, first-line-indent: 0em)
-      for e in entries {
-        e.labeled-rendered
-        parbreak()
-      }
-    }
-  }
-}
-
-/// 统一文献表入口（对齐 Typst `#bibliography` 的用法）：
-/// - 不带位置参数：渲染文档主文献表（`init-gb7714` 加载的数据）
-/// - 带一个 `bib-content` 位置参数：渲染一张“独立、从 [1] 重新编号、全量”的表
-///   （`label` 为其独立命名空间，可与主表及其它独立表共存于同一文档）
-///
-/// ```typst
-/// #gb7714-bibliography()                                   // 主表
-/// #gb7714-bibliography(read("pubs.bib"), label: "pubs")    // 独立第二表（成果等）
-/// ```
 #let gb7714-bibliography(
-  ..rest,
+  bib-content: none,
   title: auto,
   full: false,
   label: none,
-  full-control: none,
+  full-control: auto,
 ) = {
-  if rest.pos().len() > 0 {
-    _gb7714-standalone-bibliography(
-      rest.pos().at(0),
-      title: title,
-      label: label,
-      full-control: full-control,
-    )
-  } else {
-    _gb7714-main-bibliography(title: title, full: full, full-control: full-control)
+  context {
+    let current-style = _style.get()
+    let current-config = _config.get()
+    // 未显式传参时，回落到 init-gb7714 注册的默认值；仍未设置则用内置行为。
+    let resolved-title = if title == auto {
+      current-config.at("bib-title", default: auto)
+    } else {
+      title
+    }
+    let resolved-control = if full-control == auto {
+      let registered = current-config.at("bib-full-control", default: auto)
+      if registered == auto { none } else { registered }
+    } else {
+      full-control
+    }
+
+    if bib-content == none {
+      // 主表：数据来自 init-gb7714 注册的文献库
+      let entries = if full {
+        get-all-entries(config: current-config)
+      } else {
+        get-cited-entries(config: current-config)
+      }
+      _render-entry-list(
+        entries,
+        title: resolved-title,
+        style: current-style,
+        full-control: resolved-control,
+      )
+    } else {
+      // 独立表：自带文献库，按 .bib 文件顺序全量编号，label 用独立命名空间。
+      // dict 的迭代顺序不保证等于文件顺序（citegeist 0.2.2 下是哈希序），
+      // 故按其 0.3.1 提供的 position 显式排序。
+      let ns = if label != none { str(label) } else { "gb7714-sec" }
+      let sec-bib = load-bibliography(bib-content, sentence-case-titles: false)
+      let ordered = sec-bib.keys().sorted(
+        key: k => sec-bib.at(k).at("position", default: 0))
+      let entries = ordered
+        .enumerate()
+        .map(((i, key)) => _build-entry-record(
+          sec-bib,
+          key,
+          i + 1,
+          style: current-style,
+          version: _version.get(),
+          config: current-config,
+          label-prefix: ns + "-",
+        ))
+        .filter(x => x != none)
+      _render-entry-list(
+        entries,
+        title: resolved-title,
+        style: current-style,
+        full-control: resolved-control,
+      )
+    }
   }
 }
 

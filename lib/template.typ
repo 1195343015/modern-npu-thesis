@@ -1,6 +1,6 @@
 #import "deps.typ": (
   Assign, Break, Comment, Else, ElseIf, For, Function, If, IfElseChain, Line, LineBreak, Procedure, Return, Terminate,
-  While, capfig, capfig-style, capsubfig, captab, captab-style, init-gb7714, multicite, zh,
+  While, capfig, capfig-style, capsubfig, captab, captab-style, gb7714-bibliography, init-gb7714, multicite, zh,
 )
 #import "layouts/doc.typ": doc
 #import "layouts/floats.typ": algorithm, equation-note
@@ -11,7 +11,7 @@
 #import "pages/abstract.typ": abstract-page
 #import "pages/outline.typ": outline-page
 #import "pages/backmatter-page.typ": backmatter-page
-#import "pages/bibliography.typ": bilingual-bibliography, achievements-list
+#import "pages/bibliography.typ": gb7714-entries-renderer
 #import "utils.typ": distribute, page-title
 
 #let default-bibliography(graduate) = {
@@ -72,11 +72,15 @@
 
   show: init-gb7714.with(
     if bib-path != none { read(bib-path) } else { "" },
-    style: "numeric",
-    version: "2025",
     range-tilde: not graduate, // 本科连续编号用 ~ 连接
     // 研究生：著录标点全部半角；本科：著录标点全部全角（含句号 `．`）
     punct-width: if graduate { "half" } else { "full" },
+    // 文献表统一配置：页面标题由 backmatter-page 提供，逐类型渲染器主表与成果页共用
+    bib-title: none,
+    bib-full-control: gb7714-entries-renderer(
+      graduate: graduate,
+      par-indent: ref-par-indent,
+    ),
   )
 
   // 3. mainmatter 包裹所有后续内容（前置 + 正文 + 后置）
@@ -138,7 +142,7 @@
       graduate: graduate,
       english-writing: english-writing,
     )[
-      #bilingual-bibliography(graduate: graduate, par-indent: ref-par-indent)
+      #gb7714-bibliography()
     ]
   }
 
@@ -162,7 +166,10 @@
       "academic-achievements",
       english-writing: english-writing,
     )[
-      #achievements-list(read(default-achievements-bibliography()), graduate: graduate, par-indent: ref-par-indent)
+      #gb7714-bibliography(
+        bib-content: read(default-achievements-bibliography()),
+        label: "achievements",
+      )
     ]
   }
 

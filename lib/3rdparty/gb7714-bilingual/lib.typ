@@ -17,8 +17,7 @@
 
 // 导入内部实现
 #import "src/api.typ": (
-  gb7714-bibliography,
-  get-all-entries, get-cited-entries, init-gb7714-impl,
+  gb7714-bibliography, get-all-entries, get-cited-entries, init-gb7714-impl,
   multicite,
 )
 // 重新导出作者格式化工具，便于用户在 `full-control` 回调中复用默认的作者样式
@@ -50,6 +49,8 @@
   pinyin-override: (:),
   range-tilde: false,
   punct-width: auto,
+  bib-title: auto,
+  bib-full-control: auto,
   doc,
 ) = {
   // 调用内部实现
@@ -64,6 +65,8 @@
     pinyin-override: pinyin-override,
     range-tilde: range-tilde,
     punct-width: punct-width,
+    bib-title: bib-title,
+    bib-full-control: bib-full-control,
     doc,
   )
 }
