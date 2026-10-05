@@ -5,7 +5,7 @@
 #import "@preview/auto-pinyin:0.1.0": to-pinyin
 
 #import "core/state.typ": (
-  _bib-data, _cite-marker, _cn-first, _collect-citations,
+  _bib-data, _bib-raw, _has-table, _cite-marker, _cn-first, _collect-citations,
   _compute-year-suffixes, _config, _pinyin-override, _style, _version,
 )
 #import "core/language.typ": detect-language
@@ -49,6 +49,7 @@
 
   // 设置状态
   _bib-data.update(bib-data)
+  _bib-raw.update(bib-content)
   _style.update(style)
   _version.update(version)
   _config.update((
@@ -177,11 +178,17 @@
     }
   }
 
-  // 隐藏的 bibliography 让 Typst 识别 `@key` 引用语法。
-  // 放在 doc 之前，避免在文档末尾 set page(margin: 0pt) 之后触发新页。
-  hide(place(bibliography(bytes(bib-content), title: none)))
-
   doc
+
+  // 隐藏的 bibliography 让 Typst 识别 `@key` 引用语法。正常情况下它由第一张文献表
+  // 在自己的位置注册（见 gb7714-bibliography），这里只在整篇没有任何表时兜底：
+  // 放在 doc 之前会让 pagebreak(weak: true, to: "odd") 生效而产生开头空白页（#13），
+  // 无条件追加又会在文档结尾 set page(...) 之后多出一页（#22）。
+  context {
+    if not _has-table.get() {
+      hide(place(bibliography(bytes(_bib-raw.get()), title: none)))
+    }
+  }
 }
 
 // ============================================================================
@@ -534,6 +541,13 @@
   full-control: auto,
 ) = {
   context {
+    // 在第一张表的位置注册 @key 所需的原生表：这里已有用户内容，不会额外开页，
+    // 也不会在文档开头产生内容。多张表只注册一次，避免同一 key 的 label 重复。
+    let first-table = not _has-table.get()
+    _has-table.update(true)
+    if first-table {
+      hide(place(bibliography(bytes(_bib-raw.get()), title: none)))
+    }
     let current-style = _style.get()
     let current-config = _config.get()
     // 未显式传参时，回落到 init-gb7714 注册的默认值；仍未设置则用内置行为。

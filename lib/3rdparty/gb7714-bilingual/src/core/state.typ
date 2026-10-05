@@ -5,6 +5,10 @@
 // ============================================================
 
 #let _bib-data = state("gb7714-bib-data", (:))
+// init-gb7714 收到的原始 BibTeX 文本，供文献表内注册 `@key` 所需的原生表
+#let _bib-raw = state("gb7714-bib-raw", "")
+// 文档内是否已渲染过文献表（原生表只在第一张表处注册一次）
+#let _has-table = state("gb7714-has-table", false)
 #let _style = state("gb7714-style", "numeric")
 #let _version = state("gb7714-version", "2025")  // "2015" 或 "2025"
 
