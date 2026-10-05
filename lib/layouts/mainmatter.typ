@@ -79,8 +79,7 @@
   set page(footer: page-footer("I"))
   set heading(numbering: none)
   // 目录按标题位置读 counter，故首个标题之前必须已重置。
-  // 注意：此元素零高度，落在封面末页还是前置首页取决于参考文献栈包装层的
-  // 副作用；abstract-page 会在首个可见标题后再做一次确定性重置兜底（见 pages/abstract.typ）
+  // 本元素零高度，落点靠 header-footer 里的弱奇数页断页钉住（见 layouts/header-footer.typ）
   counter(page).update(1)
   body
 }
