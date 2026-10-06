@@ -3,7 +3,7 @@
 // cap-able（图/表标题排版）
 #import "@preview/cap-able:0.1.1": cap-style, capfig, capfig-style, capsubfig, captab, captab-style
 
-// gb7714-bilingual（本地拷贝，基于 main 分支修改版）
+// gb7714-bilingual（vendored，与 fork main 逐字一致，来源与版本见提交记录）
 #import "3rdparty/gb7714-bilingual/lib.typ": init-gb7714, multicite, gb7714-bibliography, format-authors, punctuation-for, terms-for
 
 // algorithmic（伪代码/算法排版）

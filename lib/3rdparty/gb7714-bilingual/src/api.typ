@@ -28,7 +28,10 @@
 /// - pinyin-override: 仅 `author-date` 且中文条目。传给 `to-pinyin(..., style: "tone-num-end", override: ...)`；
 ///   override 中的音节须与 `tone-num-end` 形式一致（如 `cho2ng`），见 auto-pinyin 文档
 /// - range-tilde: 顺序编码制下连续编号区间改用 "~" 连接（默认 false，即用 "-"）
-/// - punct-width: 著录标点宽度：`auto`（默认，跟随版本配置）/ `"half"`（全部半角）/ `"full"`（全部全角）
+/// - punct-width: 著录标点宽度：`auto`（默认，跟随版本配置）/ `"half"`（全部半角）/ `"full"`（全部全角）；
+///   亦可传字典按类覆盖：键为 `default`（基准宽度，缺省 `auto`）及类别
+///   `period` / `comma` / `colon` / `paren`（圆括号，同时控制左右）/ `semicolon`，
+///   值为 `"half"` 或 `"full"`，如 `(default: "half", paren: "full")`
 /// - bib-title: 为文档内所有文献表注册默认标题（`none` 表示一律不显示），
 ///   默认 `auto` 即不设置；`gb7714-bibliography(title:)` 显式传参优先于此。
 /// - bib-full-control: 为文档内所有文献表注册默认渲染回调，签名 `(entries) => content`，
