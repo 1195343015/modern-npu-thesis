@@ -73,8 +73,8 @@
   show: init-gb7714.with(
     if bib-path != none { read(bib-path) } else { "" },
     range-tilde: not graduate, // 本科连续编号用 ~ 连接
-    // 研究生：著录标点全部半角；本科：著录标点全部全角（含句号 `．`）
-    punct-width: if graduate { "half" } else { "full" },
+    // 研究生：著录标点全部半角；本科：著录标点全角（含句号 `．`）、圆括号单独半角
+    punct-width: if graduate { "half" } else { (default: "full", paren: "half") },
     // 文献表统一配置：页面标题由 backmatter-page 提供，逐类型渲染器主表与成果页共用
     bib-title: none,
     bib-full-control: gb7714-entries-renderer(
